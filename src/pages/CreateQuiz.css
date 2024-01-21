@@ -1,128 +1,136 @@
 .createQuizPage{
-    width: 100vw;
-    height:100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: grey;
+  width: 100vw;
+  height:100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: grey;
 }
 
 
 .createQuizContent{
-    width: 600px;
-    height:40%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    row-gap: 40px;
-    background-color: white;
-    padding:10px;
+  width: 600px;
+  height:40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  row-gap: 40px;
+  background-color: white;
+  padding:10px;
 }
 
 .createQuizContentQuizType,
 .createQuizContentSubmitCancel,
 .createQuizContentQuizNameInput,
-.optionType{
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    /* border:solid green; */
-    width:600px;
+.createQuizOptionType{
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  /* border:solid green; */
+  width:600px;
+}
+
+.createQuizContentQuizType{
+  width:500px;
+}
+
+.createQuizOptionType{
+  width:400px;
 }
 
 #quizNameInput{
-    width:400px;
-    height:40px;
-    border-radius: 10px;
-    border: none;
-    box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
+  width:400px;
+  height:40px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
 }
 
 #quizTypeText{
-    font-size: large;
-    color:grey;
+  font-size: large;
+  color:grey;
 }
 
 
-.radio-button {
-    padding: 10px;
-    margin: 5px;
-    cursor: pointer;
-    width: 120px;
-    box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
-    border-radius: 5px; /* Border radius for rounded corners */
-    background-color: white; /* Background color of the button */
-    color: grey; /* Text color */
-    border:none;
+.createQuizRadio-button {
+  padding: 10px;
+  margin: 5px;
+  cursor: pointer;
+  width: 120px;
+  box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
+  border-radius: 5px; /* Border radius for rounded corners */
+  background-color: white; /* Background color of the button */
+  color: grey; /* Text color */
+  border:none;
+
+}
+
+.createQuizRadio-button:hover {
+  background-color: #f0f0f0; /* Background color on hover */
+}
+
+.createQuizRadio-button.active {
+  background-color: #4CAF50; /* Background color when selected */
+  color: white; /* Text color when selected */
+}
+
+
+#createQuizContentCancelBtn, 
+#createQuizContentSubmitBtn{
+  width: 180px;
+  height: 30px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: #4CAF50;
+  border: none;
+
+}
+
+#createQuizContentCancelBtn{
+  box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
+  background-color: white;
+}
+
+
+@media (max-width:600px){
+
+  .createQuizContent{
+      width:95%;
+      height:auto;
+      padding:20px 0;
   }
-  
-  .radio-button:hover {
-    background-color: #f0f0f0; /* Background color on hover */
-  }
-  
-  .radio-button.active {
-    background-color: #4CAF50; /* Background color when selected */
-    color: white; /* Text color when selected */
-  }
-  
 
-  #createQuizContentCancelBtn, 
- #createQuizContentSubmitBtn{
-    width: 180px;
-    height: 30px;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 10px;
-    background-color: #4CAF50;
-    border: none;
-
-  }
-
-  #createQuizContentCancelBtn{
-    box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
-    background-color: white;
-  }
-
-
-  @media (max-width:600px){
-
-    .createQuizContent{
-        width:95%;
-        height:auto;
-        padding:20px 0;
-        row-gap: 10px;
-    }
-
-    .createQuizContentQuizType,
-    .createQuizContentSubmitCancel,
-    .createQuizContentQuizNameInput,
-    .optionType{
-      
-        width:100%;
-    }
-
-    .createQuizContentQuizType{
-      
-      flex-direction: column;
-
-  }
+  .createQuizContentQuizType,
+  .createQuizContentSubmitCancel,
+  .createQuizContentQuizNameInput,
+  .createQuizOptionType{
     
-    #quizNameInput{
-        width:280px;
-      
-    }
+      width:100%;
+  }
+
+  .createQuizContentQuizType{
     
+    flex-direction: column;
 
-    .radio-button {
-        width: 80px;
-      }
-      
-      #createQuizContentCancelBtn, 
-     #createQuizContentSubmitBtn{
-        width: 100px;
-
-      }
+}
+  
+  #quizNameInput{
+      width:280px;
     
   }
+  
+
+  .createQuizRadio-button {
+      width: 80px;
+    }
+    
+    #createQuizContentCancelBtn, 
+   #createQuizContentSubmitBtn{
+      width: 100px;
+
+    }
+  
+}

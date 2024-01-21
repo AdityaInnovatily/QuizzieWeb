@@ -34,10 +34,10 @@ export default function CreateQuiz(
 <p id="quizTypeText">{optionType}</p>
 
 </div>
-      <div className="optionType">
+      <div className="createQuizOptionType">
       {options.map((option)=>
           <button
-        className={`radio-button ${selectedButton === option.optionName ? 'active' : ''}`}
+        className={`createQuizRadio-button ${selectedButton === option.optionName ? 'active' : ''}`}
         onClick={() => handleButtonClick(option.optionName)}
       >
         {option.optionString}
