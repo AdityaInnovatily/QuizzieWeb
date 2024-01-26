@@ -1,593 +1,190 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import styles from "./Trial.css";
-// import TrendingCard from "../../components/trendingCard/TrendingCard";
-// import DeleteIcon from "../../assets/images/delete-icon.svg";
-// import EditIcon from "../../assets/images/edit-icon.svg";
-// import ShareIcon from "../../assets/images/share-icon.svg";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-// import { FadeLoader } from "react-spinners";
-// import Confetti from "react-confetti";
+import React, { useState } from 'react'
+import './CreateQuestion.css';
 
-
-const TrendingCard = ({ quizName2, impressions, creationDate }) => {
-  
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const navigate = useNavigate();
-  
-    const [width, setWidth] = useState(window.innerWidth);
-    const [height, setHeight] = useState(window.innerHeight);
-  
-    const [activeScreen, setActiveScreen] = useState("dashboard");
-  
-   
-    //for createQuiz Screen
-    const [email, setEmail] = useState("");
-    const [quizName, setQuizName] = useState("");
-    const [quizType, setQuizType] = useState("");
-  
-
-  
-    const handleCancelQuizQuestionModal = () => {
-      setShowQuestionModal(false);
-    };
-  
-    //Question Modal -
-    //for question numbers
-    const [questions, setQuestions] = useState([1]);
-    const handleAddQuestion = () => {
-      if (questions.length < 5) {
-        setQuestions([...questions, { title: "" }]);
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-      }
-    };
-  
-    const handleDeleteQuestion = (index) => {
-      if (questions.length > 1) {
-        const updatedQuestions = questions.filter((_, i) => i !== index);
-        setQuestions(updatedQuestions);
-  
-        if (currentQuestionIndex === index) {
-          setCurrentQuestionIndex(index > 0 ? index - 1 : 0);
-        } else if (currentQuestionIndex > index) {
-          setCurrentQuestionIndex(currentQuestionIndex - 1);
+const CreateQuestion = () => {
+    const [questionIndex,setQuestionIndex]=useState(0)
+    
+    const initialState={
+        pollQuestion:"",
+        questionType:"text",
+        timer:"off",
+        ans:"2",
+        ques:{
+            '1':{option1:"", imgUrl1:""},
+            '2':{option2:"", imgUrl2:""},
+            '3':{option3:"", imgUrl3:""},
         }
-      }
-      // setCurrentQuestionIndex(index-1)
-    };
-  
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  
-    useEffect(() => {
-      // Perform side effects here when currentQuestionIndex changes
-    }, [currentQuestionIndex]);
-  
-    // Update question number change handler to set current question index
-    const handleQuestionNoChange = (index) => {
-      setCurrentQuestionIndex(index);
-    };
-  
-    //for questions and options
-    const [showQuestionModal, setShowQuestionModal] = useState(false);
-  
-    const handleOptionTypeSelect = (index) => {
-      setSelectedOptionType(index);
-    };
-  
-    const [pollQuestion, setPollQuestion] = useState({});
+    }
 
-    const handleQuestionTextChange = (e, index) => {
-      const updatedQuestions = { ...pollQuestion };
-      updatedQuestions[index] = e.target.value;
-      setPollQuestion(updatedQuestions);
-    };
-  
-    const [options, setOptions] = useState(
-      Array(5)
-        .fill()
-        .map(() => [
-          { text: "", imageURL: "" },
-          { text: "", imageURL: "" },
-          { text: "", imageURL: "" },
-          { text: "", imageURL: "" },
-        ])
-    );
-  
-    const [selectedOptionType, setSelectedOptionType] = useState(0);
-    const [ansOption, setAnsOption] = useState({});
+    const [questions,setQuesitons]=useState([initialState])
 
-    const handleRadioSelect = (index) => {
-      const updatedAnsOptions = { ...ansOption };
-      updatedAnsOptions[currentQuestionIndex] = index;
-      setAnsOption(updatedAnsOptions);
-    };
-  
-    const [timerType, setTimerType] = useState({});
-  
-    const [newQuizId, setNewQuizId] = useState(null);
-  
-    const handleTimerTypeSelect = (value) => {
-      const updatedTimerTypes = { ...timerType };
-      updatedTimerTypes[currentQuestionIndex] = value;
-      setTimerType(updatedTimerTypes);
-    };
-  
-    const handleCreateQuizSubmit = () => {
-      // Validate all fields are filled
-  
-      const isPollQuestionFilled = pollQuestion[0] !== "";
-      const isOptionsFilled = options.some((option) =>
-        option.some((item) => item.text !== "" || item.imageURL !== "")
-      );
-      const isAnsOptionFilled = Object.values(ansOption).some(
-        (value) => value !== null
-      );
-      const isTimerTypeFilled =
-        quizType !== "Poll Type"
-          ? Object.values(timerType).some((value) => value !== "")
-          : true;
-      if (!isPollQuestionFilled) {
-        alert("Poll question is not filled. Please fill it.");
-        return;
-      }
-      if (selectedOptionType === null) {
-        alert("Selected option type is not set. Please set it.");
-        return;
-      }
-      if (!isOptionsFilled) {
-        alert("Options are not filled. Please fill it.");
-        return;
-      }
-      if (!isAnsOptionFilled) {
-        alert("Answer option is not set. Please set it.");
-        return;
-      }
-      if (!isTimerTypeFilled) {
-        alert("Timer type is not set. Please set it.");
-        return;
-      }
-  
-      if (!quizName || !quizType) {
-        alert("Please fill in the Quiz Name and Quiz Type");
-        return;
-      }
-  
-      console.log(options);
-  
-      const questions = [
-        {
-          pollQuestion,
-          timerType,
-          options,
-          ansOption,
-        },
-      ];
-  
-      axios
-        .post(
-          `${process.env.REACT_APP_API_BASE_URL}/api/createquiz`,
-          { quizName, quizType, questions, email },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          setNewQuizId(response.data.id);
-        })
-        .catch((error) => {
-          console.error("An error occurred while saving the quiz:", error);
-        });
-  
-      // delete data in states
-      setPollQuestion("");
-      setOptions(
-        Array(5)
-          .fill()
-          .map(() => [
-            { text: "", imageURL: "" },
-            { text: "", imageURL: "" },
-            { text: "", imageURL: "" },
-            { text: "", imageURL: "" },
-          ])
-      );
-      setAnsOption({});
-      setTimerType({});
-      setQuizName("");
-      setQuizType("");
-      setQuestions([1]);
-      setCurrentQuestionIndex(0);
-      setShowQuizPublishedModal(true);
-      setShowQuestionModal(false);
-      setNewQuizId(null);
-    };
-  
-    const handleOptionTextChange = (e, questionIndex, optionIndex) => {
-      const updatedOptions = [...options];
-      updatedOptions[questionIndex][optionIndex] = {
-        ...updatedOptions[questionIndex][optionIndex],
-        text: e.target.value,
-      };
-      setOptions(updatedOptions);
-    };
-  
-    const handleOptionImageURLChange = (e, questionIndex, optionIndex) => {
-      const updatedOptions = [...options];
-      updatedOptions[questionIndex][optionIndex] = {
-        ...updatedOptions[questionIndex][optionIndex],
-        imageURL: e.target.value,
-      };
-      setOptions(updatedOptions);
-    };
-  
-    //for analytics tab
-    const [quizzes, setQuizzes] = useState([]);
-    const [isAnalyticsLoading, setAnalyticsLoading] = useState(true);
-  
-    useEffect(() => {
-      axios
-        .get(`${process.env.REACT_APP_API_BASE_URL}/api/quizzes?email=${email}`)
-        .then((response) => {
-          setQuizzes(response.data);
-          setTimeout(() => {
-            setAnalyticsLoading(false);
-          }, 1000);
-        })
-        .catch((error) => {
-          console.error("An error occurred while fetching the quizzes:", error);
-        });
-    }, [activeScreen, email]);
-  
-    //for quiz published modal
-    const [showQuizPublishedModal, setShowQuizPublishedModal] = useState(false);
-  
-    useEffect(() => {
-      const handleResize = () => {
-        setWidth(window.innerWidth);
-        setHeight(window.innerHeight);
-      };
-  
-      window.addEventListener("resize", handleResize);
-  
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }, []);
-  
-    const jwtToken = localStorage.getItem("jwt");
-    // console.log("jwt from local storage:", jwtToken);
-  
-    axios
-      .get(`${process.env.REACT_APP_API_BASE_URL}/api/isloggedin`, {
-        headers: {
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      })
-      .then((response) => {
-        if (response.data.isLoggedIn) {
-          setEmail(response.data.user.email);
-          setIsLoggedIn(response.data.isLoggedIn);
-        } else {
-          console.log("User is not logged in");
+    const addQuestionHander=()=>{
+        if(questions.length<=4){
+            setQuesitons(prev=>([...prev,initialState]))
         }
-      })
-      .catch((error) => {
-        console.error("An error occurred:", error);
-      });
-  
- 
-  
-    //for quiz data in dashboard
-    const [quizData, setQuizData] = useState(null);
-    const [trendingQuizzes, setTrendingQuizzes] = useState([]);
-    const [dashboardLoading, setDashboardLoading] = useState(true);
-  
-    useEffect(() => {
-      // Fetch data for dashboard main container
-      axios
-        .get(`${process.env.REACT_APP_API_BASE_URL}/api/userData?email=${email}`)
-        .then((response) => {
-          const { quizzes, questions, impressions } = response.data;
-          setQuizData({ quizzes, questions, impressions });
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
+        setQuestionIndex(prev=>prev+1)
+    }
+
+    const removeQuestionhandler=(index)=>{
+        const newQuestion= questions.filter((each,idx)=>idx!==index)
+        setQuesitons(newQuestion)
+        setQuestionIndex(prev=>prev-1)
+    }
+
+    const onInputChange=(e)=>{
+        const {name,value}=e.target
+        const updatedQuestions = questions.map((each, idx) => {
+            return idx === questionIndex ? { ...each, [name]: value } : each;
         });
-  
-      // Fetch trending quizzes
-      axios
-        .get(
-          `${process.env.REACT_APP_API_BASE_URL}/api/trendingQuizzes?email=${email}`
-        )
-        .then((response) => {
-          setTrendingQuizzes(response.data);
-        })
-        .catch((error) => {
-          console.error("Error fetching trending quizzes:", error);
+        setQuesitons(updatedQuestions)
+    }
+
+    const onQuesInputChange=(e)=>{
+        const {name,value}=e.target
+        let arr=name.split(":")
+        let optNo=arr[0]
+        let type=arr[1]
+
+        const data={
+            ...questions[questionIndex].ques,
+            [optNo]:{...questions[questionIndex].ques[optNo], [type]:value}
+        }
+        const updatedQuestions = questions.map((each, idx) => {
+            return idx === questionIndex ? { ...each, ques: data } : each;
         });
-    }, [email]);
+        setQuesitons(updatedQuestions)
+    }
+
+    const addnewOption=()=>{
+        const newQuestionKey = '4'; 
+
+        const newQuestion = {
+        [newQuestionKey]: {
+            [`option${newQuestionKey}`]: "",
+            [`imgUrl${newQuestionKey}`]: "",
+        },
+        };
+        
+        const updatedQuestion=questions.map((each,idx)=>{
+            return idx === questionIndex ? {...each,ques:{...each.ques,4:newQuestion}} : each;
+        })
+        setQuesitons(updatedQuestion)
+    }
   
-    useEffect(() => {
-      if (quizData !== null && trendingQuizzes) {
-        setTimeout(() => {
-          setDashboardLoading(false);
-        }, 600);
-      }
-    }, [quizData, trendingQuizzes]);
-  
-    return (
-    <>
-      <div className={styles.modalContent}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                  className={styles.questionNoContainer}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: ".5rem",
-                      alignItems: "center",
-                    }}
-                  >
-                    {questions.map((question, index) => (
-                      <div
-                        className={`${styles.questionNo} ${
-                          index === currentQuestionIndex
-                            ? styles.activeQuestionNumber
-                            : ""
-                        }`}
-                        key={index}
-                        onClick={() => handleQuestionNoChange(index)}
-                      >
-                        {index + 1}
-                        {index !== 0 && (
-                          <span
-                            className={styles.crossBtn}
-                            onClick={() => handleDeleteQuestion(index)}
-                          >
-                            x
-                          </span>
-                        )}
-                      </div>
-                    ))}
-                    {questions.length < 5 && (
-                      <div
-                        className={styles.addBtn}
-                        onClick={handleAddQuestion}
-                      >
-                        +
-                      </div>
-                    )}
-                  </div>
-                  <p>Max 5 Questions</p>
+  return (
+    <div className='h-[100vh] text-lg font-[500] text-gray-600 fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+        <div className='flex flex-col gap-6 border w-[700px] rounded-xl py-12  bg-white'>
+
+            <div className='flex justify-between items-center px-20'>
+                <div className='flex gap-4'>
+                    {questions.map((each,index)=>{
+                        return (
+                            <div key={index} className='relative'>
+                                <div onClick={()=>setQuestionIndex(index)} className={`w-12 h-12  rounded-full flex justify-center items-center shad  ${questionIndex===index ? "bg-green-500 text-white hover:bg-green-600": "hover:bg-slate-50"}`}>{index+1}</div>
+                                {questions.length>1 && <div onClick={()=>removeQuestionhandler(index)} className='text-2xl absolute top-[-10px] right-0 cursor-pointer'>×</div>}
+                            </div>
+                        )
+                    })}
+                   
+                    <div className='text-4xl cursor-pointer' onClick={()=>addQuestionHander()}>+</div>
                 </div>
-                <div className={styles.questionContent}>
-                  <div>
-                    <input
-                      type="text"
-                      placeholder="Poll Question"
-                      value={pollQuestion[currentQuestionIndex] || ""}
-                      onChange={(e) =>
-                        handleQuestionTextChange(e, currentQuestionIndex)
-                      }
-                      className={styles.pollQuestion}
-                    />
-                  </div>
+                <p>Max 5 question</p>
+            </div>
 
-                  <div
-                    className={styles.pollOptionType}
-                    style={{ display: "flex" }}
-                  >
-                    <div style={{ marginRight: "1.5rem" }}>Option Type:</div>
-                    <label className={styles.modalLabel}>
-                      <input
-                        type="radio"
-                        name="optionType"
-                        checked={selectedOptionType === 0}
-                        onChange={() => handleOptionTypeSelect(0)}
-                      />
-                      Text
-                    </label>
-                    <label
-                      className={styles.modalLabel}
-                      style={{ marginLeft: ".5rem" }}
-                    >
-                      <input
-                        type="radio"
-                        name="optionType"
-                        checked={selectedOptionType === 1}
-                        onChange={() => handleOptionTypeSelect(1)}
-                      />
-                      Image URL
-                    </label>
-                    <label
-                      className={styles.modalLabel}
-                      style={{ marginLeft: ".5rem" }}
-                    >
-                      <input
-                        type="radio"
-                        name="optionType"
-                        checked={selectedOptionType === 2}
-                        onChange={() => handleOptionTypeSelect(2)}
-                      />
-                      Text and Image URL
-                    </label>
-                  </div>
-                  <div
-                    className={styles.pollOptions}
-                    style={{ display: "flex", flexDirection: "column" }}
-                  >
-                    {[0, 1, 2, 3].map((index) => (
-                      <div className={styles.modalLabel} key={index}>
-                        <input
-                          type="radio"
-                          name="ansOption"
-                          checked={ansOption[currentQuestionIndex] === index}
-                          onChange={() => handleRadioSelect(index)}
-                        />
-                        {selectedOptionType === 0 && (
-                          <input
-                            type="text"
-                            name={`optionText_${index}`}
-                            value={options[currentQuestionIndex][index].text}
-                            placeholder="Option"
-                            onChange={(e) =>
-                              handleOptionTextChange(
-                                e,
-                                currentQuestionIndex,
-                                index
-                              )
-                            }
-                            className={`${styles.optionInput} ${
-                              ansOption &&
-                              ansOption[currentQuestionIndex] === index
-                                ? styles.greenBackground
-                                : ""
-                            }`}
-                          />
-                        )}
-                        {selectedOptionType === 1 && (
-                          <input
-                            type="url"
-                            name={`optionImageURL_${index}`}
-                            value={
-                              options[currentQuestionIndex][index].imageURL
-                            }
-                            placeholder="Option Image URL"
-                            onChange={(e) =>
-                              handleOptionImageURLChange(
-                                e,
-                                currentQuestionIndex,
-                                index
-                              )
-                            }
-                            className={`${styles.optionInput} ${
-                              ansOption &&
-                              ansOption[currentQuestionIndex] === index
-                                ? styles.greenBackground
-                                : ""
-                            }`}
-                          />
-                        )}
-                        {selectedOptionType === 2 && (
-                          <>
-                            <input
-                              type="text"
-                              name={`optionText_${index}`}
-                              value={options[currentQuestionIndex][index].text}
-                              placeholder="Option"
-                              onChange={(e) =>
-                                handleOptionTextChange(
-                                  e,
-                                  currentQuestionIndex,
-                                  index
-                                )
-                              }
-                              className={`${styles.optionInput} ${
-                                ansOption &&
-                                ansOption[currentQuestionIndex] === index
-                                  ? styles.greenBackground
-                                  : ""
-                              }`}
-                            />
+            <div className='border-gray-700  px-20'>
+                <input type="text" name='pollQuestion' value={questions[questionIndex]?.pollQuestion} onChange={onInputChange} placeholder='Poll Question' className='rounded-lg shad py-2 px-4 w-full'/>
+            </div>
 
-                            <input
-                              type="url"
-                              name={`optionImageURL_${index}`}
-                              value={
-                                options[currentQuestionIndex][index].imageURL
-                              }
-                              placeholder="Option Image URL"
-                              onChange={(e) =>
-                                handleOptionImageURLChange(
-                                  e,
-                                  currentQuestionIndex,
-                                  index
-                                )
-                              }
-                              className={`${styles.optionInput} ${
-                                ansOption &&
-                                ansOption[currentQuestionIndex] === index
-                                  ? styles.greenBackground
-                                  : ""
-                              }`}
-                            />
-                          </>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {quizType !== "Poll Type" && (
-                    <div
-                      className={styles.timerType}
-                      style={{ display: "flex" }}
-                    >
-                      <div style={{ marginRight: "auto" }}>Timer Type:</div>
-                      <label className={styles.modalLabel}>
-                        <input
-                          type="radio"
-                          name="timerType"
-                          value="5 Sec"
-                          checked={timerType[currentQuestionIndex] === "5 Sec"}
-                          onChange={() => handleTimerTypeSelect("5 Sec")}
-                        />{" "}
-                        5 Sec
-                      </label>
-                      <label
-                        className={styles.modalLabel}
-                        style={{ marginLeft: ".5rem" }}
-                      >
-                        <input
-                          type="radio"
-                          name="timerType"
-                          value="10 Sec"
-                          checked={timerType[currentQuestionIndex] === "10 Sec"}
-                          onChange={() => handleTimerTypeSelect("10 Sec")}
-                        />
-                        10 Sec
-                      </label>
-                      <label
-                        className={styles.modalLabel}
-                        style={{ marginLeft: ".5rem" }}
-                      >
-                        <input
-                          type="radio"
-                          name="timerType"
-                          value="OFF"
-                          checked={timerType[currentQuestionIndex] === "OFF"}
-                          onChange={() => handleTimerTypeSelect("OFF")}
-                        />{" "}
-                        OFF
-                      </label>
+            <div className='flex justify-between border-gray-700 px-24'>
+                <p>Option Type</p>
+                <div className='flex gap-5'>
+                    <div className='flex gap-1'>
+                        <input type="radio" id="html" name="questionType" value="text" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'text'}/>
+                        <label for="html">Text</label>
                     </div>
-                  )}
-                  <div className={styles.buttonContainer}>
-                    <button
-                      onClick={handleCancelQuizQuestionModal}
-                      className={styles.cancelModalButton}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleCreateQuizSubmit}
-                      className={styles.confirmCreateQuizButton}
-                    >
-                      Create Quiz
-                    </button>
-                  </div>
+                    <div className='flex gap-1'>
+                        <input type="radio" id="css" name="questionType" value="image" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'image'}/>
+                        <label for="css">Image URL</label>
+                    </div>
+                    <div className='flex gap-1'>
+                        <input type="radio" id="javascript" name="questionType" value="text&image" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'text&image'}/>
+                        <label for="javascript">Text & Image URL</label>
+                    </div>
                 </div>
-              </div>
-    </>
-  );
-};
+            </div>
 
-export default TrendingCard;
+            <div className='flex justify-between gap-10 items-end px-[50px]'>
+                <div className='flex flex-col gap-2'>
+                    {Object.keys(questions[questionIndex]?.ques).map((each,index)=>{
+                        return (
+                            <div className='flex gap-4 border'>
+                                <input type="radio"  name="ans" value={index+1} onChange={onInputChange} checked={questions[questionIndex]?.ans === (index+1).toString()}/>
+
+                                {(questions[questionIndex]?.questionType==="text&image" || questions[questionIndex]?.questionType==="text") &&
+                                <input type="text" 
+                                onChange={onQuesInputChange}  
+                                value={questions[questionIndex]?.ques?.[index+1][`option${index+1}`]}
+                                name={`${index+1}:option${index+1}`}
+                                placeholder={(questions[questionIndex]?.questionType==="text" || questions[questionIndex]?.questionType==="text&image")  ? 'Text':"Image Url"} 
+                                className={`rounded-lg shad py-2 px-4 w-[80%] ${questions[questionIndex]?.ans === (index+1).toString() ?"bg-green-500 text-white placeholder-gray-100":""}  `} />}
+
+                                {(questions[questionIndex]?.questionType==="text&image" || questions[questionIndex]?.questionType==="image") &&
+                                <input type="text" 
+                                onChange={onQuesInputChange}  
+                                value={questions[questionIndex]?.ques?.[index+1][`imgUrl${index+1}`]}
+                                name={`${index+1}:imgUrl${index+1}`}
+                                placeholder="Image Url"
+                                className={`rounded-lg shad py-2 px-4 w-[80%] ${questions[questionIndex]?.ans === (index+1).toString() ?"bg-green-500 text-white placeholder-gray-100":""}  `} />
+                                }
+                                <div className={index>1 ? "block":"invisible"}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="25" height="40" viewBox="0 0 30 30">
+                                        <path d="M 14.984375 2.4863281 A 1.0001 1.0001 0 0 0 14 3.5 L 14 4 L 8.5 4 A 1.0001 1.0001 0 0 0 7.4863281 5 L 6 5 A 1.0001 1.0001 0 1 0 6 7 L 24 7 A 1.0001 1.0001 0 1 0 24 5 L 22.513672 5 A 1.0001 1.0001 0 0 0 21.5 4 L 16 4 L 16 3.5 A 1.0001 1.0001 0 0 0 14.984375 2.4863281 z M 6 9 L 7.7929688 24.234375 C 7.9109687 25.241375 8.7633438 26 9.7773438 26 L 20.222656 26 C 21.236656 26 22.088031 25.241375 22.207031 24.234375 L 24 9 L 6 9 z" fill="red" ></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        )
+                    }) }
+                    
+                    {Object.keys(questions[questionIndex]?.ques).length<4 &&
+                    <div className='flex gap-4 ml-[29px] w-[77%]'>
+                       <button onClick={()=>addnewOption()} className='shad w-full py-2 flex justify-center items-center rounded-lg text-lg hover:bg-slate-50'>Add Option</button>
+                    </div>}
+                
+                </div>
+                <div className='flex flex-col gap-2 items-center mr-6'>
+                    <p>Timer</p>
+                    <div className='flex flex-col gap-3'>
+                        <div 
+                        onClick={(e)=>{
+                            e.target={name:"timer",value:"off"}
+                            onInputChange(e)
+                        }}
+                        className={`shad w-[80px] py-1 flex justify-center items-center rounded-lg text-base ${questions[questionIndex]?.timer==="off" ? "bg-red-500 text-white":"bg-white" }`}>Off</div>
+
+                        <div
+                        onClick={(e)=>{
+                            e.target={name:"timer",value:"5"}
+                             onInputChange(e)
+                        }}
+                         className={`shad w-[80px] py-1 flex justify-center items-center rounded-lg text-base ${questions[questionIndex]?.timer==="5" ? "bg-red-500 text-white":"bg-white" }`}>5 sec</div>
+
+                        <div
+                        onClick={(e)=>{
+                            e.target={name:"timer",value:"10"}
+                             onInputChange(e)
+                        }}
+                         className={`shad w-[80px] py-1 flex justify-center items-center rounded-lg text-base ${questions[questionIndex]?.timer==="10" ? "bg-red-500 text-white":"bg-white" }`}>10 sec</div>
+                    </div>
+                </div>
+            </div>
+
+            <div className='flex justify-between mt-4 px-20'>
+               <button className='shad w-[45%] py-1 flex justify-center items-center rounded-lg hover:bg-slate-50'>Cancel</button>
+               <button className='shad w-[45%] py-1 flex justify-center items-center rounded-lg bg-green-500 text-white hover:bg-green-600'>Create Quiz</button>
+            </div>
+        </div>
+    </div>
+  )
+}
+
+export default CreateQuestion

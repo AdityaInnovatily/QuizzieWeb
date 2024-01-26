@@ -168,7 +168,7 @@ export default function CreateQuestion(
         <button key={button.id} className="questionCircleButton">
           {button.id}
         </button>
-      ))}analyticsTable
+      ))}
 
       {buttons.length <5 && (
         <button className="plus-button" onClick={handleAddButton}>

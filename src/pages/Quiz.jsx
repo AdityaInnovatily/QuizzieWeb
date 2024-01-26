@@ -89,7 +89,7 @@ time:10
 
 
 const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-const [timer, setTimer] = useState(data[0].time);
+const [timer, setTimer] = useState(data[0]?.time);
 
 useEffect(() => {
   const countdown = setInterval(() => {
@@ -132,26 +132,26 @@ const currentQuestion = data[currentQuestionIndex];
       <div className="questionCount">0{currentQuestionIndex + 1}/0{data.length}</div>
       <div className="questionTimer">00:{timer >= 10 ? timer:  "0" +timer}s</div>
       </div>
-      <div className="quizQuestion">{currentQuestion.question}</div>
+      <div className="quizQuestion">{currentQuestion?.question}</div>
       <div className="quizOptions">
-        {currentQuestion.options.map((option) => (
+        {currentQuestion?.options.map((option) => (
 
-          <div key={option.id} className="quizOption">
-          {option.image && option.text ? 
+          <div key={option?.id} className="quizOption">
+          {option?.image && option?.text ? 
     <>
-      <p>{option.text}</p>
-      <img src={option.image} />
+      <p>{option?.text}</p>
+      <img src={option?.image} />
     </> : 
-    option.text ? 
-      <p>{option.text}</p> : 
-      <img src={option.image} />
+    option?.text ? 
+      <p>{option?.text}</p> : 
+      <img src={option?.image} />
   }
          
           </div>
 
         ))}
       </div>
-      
+
        <button className = "createQuestionContentSubmitBtn" 
       onClick={handleNext}>
       {currentQuestionIndex == data.length-1 ? 
