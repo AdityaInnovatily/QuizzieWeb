@@ -1,5 +1,4 @@
 import "./CreateQuiz.css";
-
 import {useState} from "react";
 
 export default function CreateQuiz(
@@ -61,7 +60,6 @@ export default function CreateQuiz(
       </button> */}
 
         </div>
-
 
         <div className="createQuizContentSubmitCancel">
             

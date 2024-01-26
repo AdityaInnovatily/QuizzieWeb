@@ -1,13 +1,18 @@
 
 import "./Register.css";
-import { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {registerRoute} from "../APIRoutes";
+import { useNavigate, Link } from "react-router-dom";
 
 
 export default function Register(){
   
+  const localStorageUserDetails =  JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+ 
+  const navigate = useNavigate();
   const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -15,82 +20,97 @@ export default function Register(){
     draggable: true,
     theme: "dark",
   };
-  
   const [values, setValues] = useState({
-    firstName:"",
-    lastName :"",
-    email :"",
-    phoneNo :"",
-    dateOfBirth :"",
-    highestEducation :"",
-    resume:"",
-    profile:""
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  })
+  useEffect(() => {
+    if (localStorageUserDetails) {
+      navigate("/dashboard");
+    }
+  }, []);
 
-  const changeHandler = async (event)=>{
-
-    setValues({...values,[event.target.name]: event.target.value});
-
-
+  const handleChange = (event) => {
+    setValues({ ...values, [event.target.name]: event.target.value });
   };
-  
-  const handleValidation = ()=>{
 
-    const {firstName,lastName,email, phoneNo, dateOfBirth, highestEducation,resume,profile} = values;
-    console.log("values;;;",values);
-    if(!firstName || !lastName || !email || !phoneNo || !dateOfBirth || !highestEducation ){
+  const handleValidation = () => {
+    const { password, confirmPassword, name, email } = values;
+    if (password !== confirmPassword) {
       toast.error(
-        "Please, fill complete details",
+        "Password and confirm password should be same.",
         toastOptions
       );
-
       return false;
-    }else{
-
-      return true;
+    } 
+     else if (name.length < 3) {
+      toast.error(
+        "username should be greater than 3 characters.",
+        toastOptions
+      );
+      return false;
+    } 
+    // else if (password.length < 8) {
+    //   toast.error(
+    //     "Password should be equal or greater than 8 characters.",
+    //     toastOptions
+    //   );
+    //   return false;
+    // } 
+    else if (email === "") {
+      toast.error("Email is required.", toastOptions);
+      return false;
     }
+
+    return true;
   };
 
-
-  const submitUser =  async (event)=>{
-
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    
+    if (handleValidation()) {
+      const { email, name, password } = values;
+     
+      const response  = await fetch(registerRoute, {
+        method: 'POST',
+        headers: {
+          // Authorization: `Bearer ${localStorageUserDetails.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          password: "password"
+        }),
+      });
 
-    if(handleValidation()){
-    const {firstName,lastName,email, phoneNo, dateOfBirth, highestEducation,resume,profile} = values;
-    // console.log('submit',registerRoute);
+        let data = await response.json();
 
-    let formData = new FormData();
-      formData.append('file', resume);
-      console.log("fpr,a", formData);
-  
-    const response  = await fetch(registerRoute, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: 
-      JSON.stringify(
-        {
-      firstName:firstName,
-      lastName:lastName,
-      email:email,
-      phoneNo:phoneNo,
-      dateOfBirth:dateOfBirth,
-      highestEducation:highestEducation,
-      resume:formData,
-      profile:profile
+        if(data.msg){
+            toast.error(data.msg,toastOptions);
+        }else{
+
+          localStorage.setItem(
+            process.env.REACT_APP_LOCALHOST_KEY,
+            JSON.stringify(data)
+          );
+
+          toast.error("successfully registered", toastOptions);
+
+          setTimeout(()=>{
+
+            navigate("/login");
+
+          },2000);
+         
+        }
+          
+       
     }
-
-
-    ),
-    });
-
-      let data = await response.json();
-   
-    }
-  }
+  };
 
     return (<>
       <div className="registrationPage">
@@ -101,8 +121,8 @@ export default function Register(){
         </div>
         
         <div className="logIn_SignUpOption">
-          <button id = "signUpOption">Sign Up</button>
-           <button id = "logInOption">Log In</button>
+          <button id = "signUpOption" onClick={()=>{navigate("/register")}}>Sign Up</button>
+           <button id = "logInOption" onClick={()=>{navigate("/login")}}>Log In</button>
          
         </div>
 
@@ -110,21 +130,33 @@ export default function Register(){
 
         <div className = "registrationName">
           <p id = "registrationNameText">Name</p>
-         <input id= "registrationNameInput" name = "name" ></input> 
+         <input 
+         id= "registrationNameInput" 
+         name = "name" 
+         onChange={(e) => handleChange(e)}></input> 
         </div>
         <div className = "registrationEmail">
           <p id = "registrationEmailText">Email</p>
-         <input id= "registrationEmailInput" name = "email" ></input> 
+         <input 
+         id= "registrationEmailInput" 
+         name = "email"  
+         onChange={(e) => handleChange(e)}></input> 
         </div>
 
         <div className = "registrationPassword">
           <p id = "registrationPasswordText">Password</p>
-           <input id= "registrationPasswordInput" name = "password" ></input>
+           <input 
+           id= "registrationPasswordInput" 
+           name = "password"  
+           onChange={(e) => handleChange(e)}></input>
          </div>
 
         <div className = "registrationConfirmPassword">
           <p id = "registrationConfirmPasswordText">Confirm Password</p>
-          <input id= "registrationConfirmPasswordInput" name = "confirmPassword" onChange = {changeHandler}></input> 
+          <input 
+          id= "registrationConfirmPasswordInput" 
+          name = "confirmPassword"  
+          onChange={(e) => handleChange(e)}></input> 
           </div>
 
         </div>
@@ -132,7 +164,7 @@ export default function Register(){
 
 
       <div className="submitButton">
-        <button id = "submitButton">Sign-Up</button>
+        <button id = "submitButton" onClick = {handleSubmit}>Sign-Up</button>
       </div>
             
             

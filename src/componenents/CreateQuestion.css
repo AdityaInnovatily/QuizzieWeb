@@ -38,6 +38,42 @@
 }
 
 
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+
+.questionCircleButton {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color:white;
+  /* color: #fff; */
+  border: none;
+  box-shadow: 0 0 25px 0 rgba(0,0,0,.5);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.plus-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #34a853;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+
 #questionNameInput{
     width:400px;
     height:40px;
@@ -52,9 +88,9 @@
 }
 
 
-.radio-button {
-    padding: 10px;
-    margin: 5px;
+.radio-input {
+    padding: 7px;
+    margin: 0 5px 0 0;
     cursor: pointer;
     width: 120px;
     box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
@@ -64,11 +100,11 @@
     border:none;
   }
   
-  .radio-button:hover {
+  .radio-input:hover {
     background-color: #f0f0f0; /* Background color on hover */
   }
   
-  .radio-button.active {
+  .radio-input.active {
     background-color: #4CAF50; /* Background color when selected */
     color: white; /* Text color when selected */
   }
@@ -117,19 +153,18 @@
 
 .questionOptions{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: left;
     align-items: center;
     border: solid red;
-    width:200px;
     padding:10px;
 }
 
-.questionOptions{
+/* .questionOptions{
  flex-direction: row;
  width:160px;
 
-}
+} */
 
 #questionOptionsAddBtn{
     width: 180px;
@@ -139,7 +174,7 @@
     border-radius: 10px;
     border: none;
     box-shadow: 0 0 25px 0 rgba(0,0,0,.35);
-    background-color: white;
+    /* background-color: white; */
 }
 
 

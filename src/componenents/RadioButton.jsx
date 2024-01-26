@@ -19,6 +19,71 @@ const theme = createTheme({
     },
   });
 
+  let mainQuestionData = [
+    {
+    id:"question1",
+    question:"",
+    options:[ 
+          {id:"optionId1",text:"",imageUrl:""},
+          {id:"optionId2",text:"",imageUrl:""},
+          {id:"optionId3",text:"",imageUrl:""},
+          {id:"optionId4",text:"",imageUrl:""}
+            ],
+    solution:[{id:"", text:"", imageUrl:""}],
+    time:0
+    },
+    {
+      id:"question2",
+      question:"",
+      options:[ 
+            {id:"optionId1",text:"",imageUrl:""},
+            {id:"optionId2",text:"",imageUrl:""},
+            {id:"optionId3",text:"",imageUrl:""},
+            {id:"optionId4",text:"",imageUrl:""}
+              ],
+      solution:{id:"", text:"", imageUrl:""},
+      time:0
+      },
+      {
+        id:"question3",
+        question:"",
+        options:[ 
+              {id:"optionId1",text:"",imageUrl:""},
+              {id:"optionId2",text:"",imageUrl:""},
+              {id:"optionId3",text:"",imageUrl:""},
+              {id:"optionId4",text:"",imageUrl:""}
+                ],
+        solution:{id:"", text:"", imageUrl:""},
+        time:0
+        },
+        {
+          id:"question4",
+          question:"",
+          options:[ 
+                {id:"optionId1",text:"",imageUrl:""},
+                {id:"optionId2",text:"",imageUrl:""},
+                {id:"optionId3",text:"",imageUrl:""},
+                {id:"optionId4",text:"",imageUrl:""}
+                  ],
+          solution:{id:"", text:"", imageUrl:""},
+          time:0
+          },
+          {
+            id:"question5",
+            question:"",
+            options:[ 
+                  {id:"optionId1",text:"",imageUrl:""},
+                  {id:"optionId2",text:"",imageUrl:""},
+                  {id:"optionId3",text:"",imageUrl:""},
+                  {id:"optionId4",text:"",imageUrl:""}
+                    ],
+            solution:{id:"", text:"", imageUrl:""},
+            time:0
+            }
+];
+
+let activeQuestionToCreate = "question1";
+
 export default function CreateQuestion(
   {inputName = "Question name", 
   optionType = "Option Type",
@@ -29,17 +94,23 @@ export default function CreateQuestion(
     {optionName:"textImageUrl",optionString:"Text & Image URL"}
   ]
 
-  }){
+  }
+  ){
+
+    ///  which question is active to create..
+    // const [activeQuestionToCreate, setActiveQuestionToCreate] = useState("question1");
+
+
 
     // for question button 1,2,3,4 
 
-    const [buttons, setButtons] = useState([{ id: 1 }]);
+    const [questionButtons, setQuestionButtons] = useState([{ id: "question1" }]);
 
   const handleAddButton = () => {
-    const newButtonId = buttons.length + 1;
+    const newButtonId = `question${questionButtons.length + 1}`;
     const newButton = { id: newButtonId };
 
-    setButtons([...buttons, newButton]);
+    setQuestionButtons([...questionButtons, newButton]);
   };
 
   // end /////////////////// end //////// end ////////
@@ -62,7 +133,7 @@ export default function CreateQuestion(
         console.log("envent;",event.target.value);
         
         for(let val of optionValues){
-    
+  
             if(val.id == event.target.value){
                 // val.text = event.target.value;
                 let obj = {
@@ -72,12 +143,30 @@ export default function CreateQuestion(
                 };
 
                 setSelectedOption(obj);
+                console.log("active question,",activeQuestionToCreate);
 
+                for(let data of mainQuestionData){
+
+                  if(data.id == activeQuestionToCreate){
+                    console.log("data.id",activeQuestionToCreate);
+                    data.solution[0] = {...obj};
+                  }
+
+                };
+
+                // mainQuestionData.map((data)=>{
+                //   if(data.id == activeQuestionToCreate){
+                //     console.log("data.id",activeQuestionToCreate);
+                //     data.solution[0] = {...obj};
+                //   }
+                // });
+                // mainQuestionData[0].solution[0] = {...obj};
+            
             }
             
            };
      
-           console.log('answer;',selectedOption);
+
     };
 
     /////end
@@ -105,6 +194,20 @@ export default function CreateQuestion(
        };
     
         setOptionValues(optionValues);
+        console.log("active question1111111,",activeQuestionToCreate);
+
+        for(let data of mainQuestionData){
+       
+          if(data.id == activeQuestionToCreate){
+            console.log("data.id before", data.id, data.options, activeQuestionToCreate);
+            data.options = [...optionValues];
+            console.log("data.id after", data.id, data.options, activeQuestionToCreate);
+          }
+
+        };
+
+        // mainQuestionData[0].options = [...optionValues];
+        
      console.log("optionValue;",optionValues);
       };
     
@@ -119,6 +222,14 @@ export default function CreateQuestion(
        };
     
         setOptionValues(optionValues);
+        console.log("active question2222222,",activeQuestionToCreate);
+         for(let data of mainQuestionData){
+          if(data.id == activeQuestionToCreate){
+            console.log("data.id",activeQuestionToCreate);
+            data.options = [...optionValues];
+          }
+        };
+      
      console.log("optionValue;",optionValues);
       };
 
@@ -133,7 +244,7 @@ export default function CreateQuestion(
 
     setOptions([...options, newButton]);
   };
-
+ 
 
     //this will delete option.
      const handleDeleteButton = (id)=>{
@@ -144,6 +255,14 @@ export default function CreateQuestion(
         });
 
         setOptions(new_options);
+        // mainQuestionData[0].options = [...new_options];
+        console.log("active question33333333,",activeQuestionToCreate);
+        for(let data of mainQuestionData){
+          if(data.id == activeQuestionToCreate){
+            console.log("data.id",activeQuestionToCreate);
+            data.options = [...new_options];
+          }
+        };
 
         if(id == "optionId3"){
           optionValues.splice(2,1);//it will remove index 2(option3)
@@ -154,7 +273,15 @@ export default function CreateQuestion(
 
 /////////////// end end //////////////////
     
+//// submit button////
 
+ const handleSubmitButton = (()=>{
+  console.log("question submitted");
+
+ 
+
+  console.log(mainQuestionData);
+ })
     return <>
 
         <div className="createQuestionPage">
@@ -163,14 +290,14 @@ export default function CreateQuestion(
 
     <div className="createQuestionContentQuestionButton">
     <div className="button-container">
-      {buttons.map((button) => (
-
-        <button key={button.id} className="questionCircleButton">
-          {button.id}
+      {questionButtons.map((button,index) => (
+      
+        <button key={button.id} className="questionCircleButton" onClick={()=> activeQuestionToCreate = button.id}>
+          {index +1}
         </button>
-      ))}analyticsTable
+      ))}
 
-      {buttons.length <5 && (
+      {questionButtons.length <5 && (
         <button className="plus-button" onClick={handleAddButton}>
         <Add />
       </button>
@@ -193,7 +320,7 @@ export default function CreateQuestion(
       <div className="optionType">
       {optionTypeOptions.map((option)=>
           <button
-        className={`radio-buttonOption ${selectedOptionTypeButton === option.optionName ? 'active' : ''}`}
+        className={`radio-button ${selectedOptionTypeButton === option.optionName ? 'active' : ''}`}
         onClick={() => handleOptionTypeButtonClick(option.optionName)}
       >
         {option.optionString}
@@ -212,8 +339,6 @@ export default function CreateQuestion(
         <input 
             type="radio"
             value={option.id}
-            id = {option.id}
-          
             checked={selectedOption.id === option.id}
             onChange={handleOptionChange}
           />
@@ -222,7 +347,6 @@ export default function CreateQuestion(
             type="text"
             name = {option.id}
             id = {option.id}
-            placeholder= "sa;fd"
             className={`radio-input ${selectedOption.id === option.id ? 'active' : ''}`}
             onChange={(e) => handleOptionInputChangeText(e)}/>
 
@@ -256,7 +380,7 @@ export default function CreateQuestion(
         <div className="createQuestionContentSubmitCancel">
             
             <button id="createQuestionContentCancelBtn">Cancel</button>
-            <button id="createQuestionContentSubmitBtn">Submit</button>
+            <button id="createQuestionContentSubmitBtn" onClick = {handleSubmitButton}>Submit</button>
 
         </div>
 

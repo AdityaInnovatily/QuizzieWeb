@@ -1,0 +1,99 @@
+
+.analyticsPage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width:100vw;
+    height:100vh;
+    background-color: green;
+    /* border:solid gray; */
+    /* padding:10px; */
+}
+
+.analyticsContent{
+    width: 100%;
+    height: auto;
+    overflow: auto;
+
+    /* border:solid purple; */
+}
+
+#analyticsHeader{
+    height:20%;
+    color: #4f6fe4; /* Text color */
+    font-size: 26px; /* Font size */
+    font-weight: bold; /* Font weight */
+    /* Add any other text styles you want */
+}
+
+.analyticsTable,
+.analyticsTableRowIcons{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /* border:solid red; */
+   
+}
+
+.analyticsTableRowEdit,
+.analyticsTableRowDelete,
+.analyticsTableRowShare{
+
+    border:none;
+    background-color: transparent;
+    margin-top:2px;
+    width: auto;
+    height: auto;
+    
+}
+
+.analyticsTableRowEdit{
+    color:#ac66f2;
+}
+
+.analyticsTableRowDelete{
+    color:red;
+}
+
+.analyticsTableRowShare{
+    color:rgb(67, 198, 67);
+}
+
+
+@media (max-width:700px){
+
+    .analyticsPage{
+        flex-direction: column;
+    }
+
+    .table_main {
+        width: 100%;
+        font-size: auto;
+        border-collapse: collapse;
+        
+      }
+    
+    th{
+        font-size: 8px; 
+        /* Adjust the font size as needed */
+      }
+      td{
+        padding:0px;
+        margin:0px;
+        border:solid red;
+        font-size: 12px; 
+        font-weight: bold;
+        /* background-color: green; */
+      }
+
+      .analyticsTableRowIcons{
+        flex-direction: column;
+      
+      }
+  
+
+}
+
+

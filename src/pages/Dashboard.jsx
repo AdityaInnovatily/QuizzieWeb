@@ -1,7 +1,18 @@
 import "./Dashboard.css";
 import Navbar from "../componenents/Navbar";
+import { useNavigate } from "react-router-dom";
+import DeleteBox from "../componenents/DeleteBox";
+import React, { useState, useEffect } from "react";
 
 export default function Dashboard(){
+
+  const navigate = useNavigate();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
 
     const data = [
         { name: "Quiz1", value: 4 },
@@ -54,7 +65,11 @@ export default function Dashboard(){
             
             <div className="dashboard_TotalValues_Quiz">Quiz</div>
             <div className="dashboard_TotalValues_Questions">Questions</div>
-            <div className="dashboard_TotalValues_Impressions">Impressions</div>
+            <div className="dashboard_TotalValues_Impressions" onClick={ 
+              openModal}
+            >Impressions</div>
+
+{isModalOpen && <DeleteBox/>}
            
            </div>
 

@@ -1,0 +1,82 @@
+.questionAnalysisPage{
+    
+    width:100vw;
+    height: 100vh;
+    /* background-color: blueviolet; */
+    display: flex;
+    overflow: hidden;
+}
+
+.questionAnalysisContent{
+    width:100vw;
+    height:auto;
+    padding:10px;
+    background-color: rgb(196, 193, 193);
+    /* overflow-y: auto; */
+   
+}
+
+.questionAnalysisHeader{
+    display: flex;
+    justify-content: space-between;
+    height:20vh;
+    /* border: solid green; */
+}
+
+.questionAnalysisQuestionsList{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: solid purple;
+    width:auto;
+    height:80vh;
+    padding:5px;
+    overflow-y: auto;
+}
+
+.questionAnalysisQuestion{
+    /* border:solid red; */
+}
+
+
+.questionAnalysisQuestionDetailsBoxes{
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    column-gap: 20px;
+}
+
+.questionAnalysisQuestionDetailsBox{
+    width:auto;
+    height:auto;
+    text-align: center;
+    /* border:solid red; */
+    padding:10px 10px;
+    border-radius: 12px;
+    background-color: white;
+  
+}
+
+.questionAnalysisQuestionDetailsBox p{
+    font-size: 20px;
+}
+
+@media (max-width:700px){
+
+    .questionAnalysisPage{
+        flex-direction: column;
+    }
+}
+
+
+@media (max-width:600px){
+
+.questionAnalysisQuestionDetailsBox p{
+
+        padding: 0px;
+        font-size: small;
+        /* border:solid green; */
+    }
+}
