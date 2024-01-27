@@ -23,7 +23,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path = "/dashboard" element = {<Dashboard/>}/>
         <Route path = "/createQuiz" element = {<CreateQuiz/>}/>
-        {/* <Route path = "/" element = {<CreateQuestion/>}/> */}
+        <Route path = "/" element = {<CreateQuestion/>}/>
         <Route path = "/radio" element = {<RadioButton/>}/>
         <Route path = "/t" element = {<Trial/>}/>
         <Route path = "/trend" element = {<TrendingCard/>}/>
@@ -31,7 +31,7 @@ export default function App() {
         {/* <Route path = "/" element = {<DeleteBox/>}/> */}
         {/* <Route path = "/" element = {<QuestionAnalysis/>}/> */}
         {/* <Route path = "/" element = {<PollAnalysis/>}/> */}
-        <Route path = "/" element = {<Quiz/>}/>
+        {/* <Route path = "/" element = {<Quiz/>}/> */}
 
       </Routes>
     </BrowserRouter>
