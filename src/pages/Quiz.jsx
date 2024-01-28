@@ -1,166 +1,126 @@
 import "./Quiz.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import QuizCompletion from "../componenents/QuizCompletion";
 
-const Quiz = ()=>{
+
+const Quiz = () => {
   const navigate = useNavigate();
+  const [quizData, setQuizData] = useState([]); // Use quizData instead of data
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [timer, setTimer] = useState(10);
+  const [userAnswer, setUserAnswer] = useState({id:"",text:"",image:""});
+  const [userScore, setUserScore] = useState(0);
 
-  let data = async ()=>{
-
-const response = await fetch("http://localhost:5000/quiz/getquestions/65b5e4f721ae83bb7629edd8", {
-    method: 'GET',
-    headers: {
-      // Add headers if needed
-      'Content-Type': 'application/json',
-      // Include any additional headers required for your GET request
-    },
-    // No need for the 'body' property in a GET request
-  });
-  
-  let datak = await response.json();
-
-  return datak;
-  }
-
-  useEffect(()=>{
-    data();
-  },[])
+ 
 
 
-  
-//     let data = [{
-//         id:"11",
-//         question:"What is your name ?",
-//         time:10,
-//         quizType:"poll",
-//         options: [{
-//             id:"1",
-//             text:"option1",
-//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-//         },
-//         {
-//             id:"2",
-//             text:"option2",
-//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-//         },
-//         {
-//             id:"3",
-//             text:"option3",
-//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-//         },
-//         {
-//             id:"4",
-//             text:"option4",
-//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-//         },
-//     ]
-   
-// },
-// {
-//     id:"22",
-//     question:"What is your name2 ?",
-//     options: [{
-//         id:"1",
-//         text:"option1",
-//         image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-//     },
-//     {
-//         id:"2",
-//         text:"option2",
-//         image:""
-//     },
-//     {
-//         id:"3",
-//         text:"option3",
-//         image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-//     },
-//     {
-//         id:"4",
-//         text:"option4",
-//         image:""
-//     },
-// ],
-// time:10
-// },
+  useEffect(() => {
+    // Fetch quiz data from the API
+    const fetchQuizData = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/quiz/getquestions/65b607bf61f13536878e1715", {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // Include any additional headers required for your GET request
+          },
+        });
 
-// {
-//     id:"33",
-//     question:"What is your name3 ?",
-//     options: [{
-//         id:"1",
-//         text:"option1",
-//         image:""
-//     },
-//     {
-//         id:"2",
-//         text:"option2",
-//         image:""
-//     },
-//     {
-//         id:"3",
-//         text:"option3",
-//         image:""
-//     },
-//     {
-//         id:"4",
-//         text:"option4",
-//         image:""
-//     },
-// ],
-// time:10
-// },
+        if (!response.ok) {
+          throw new Error('Failed to fetch quiz data');
+        }
 
-// ];
-
-
-const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-const [qnaCompleted, setQnaCompleted] = useState(false);
-const [pollCompleted, setPollCompleted] = useState(false);
-
-const [timer, setTimer] = useState(data[0].time);
-
-useEffect(() => {
-  const countdown = setInterval(() => {
-    setTimer((prevTimer) => {
-      if (prevTimer === 0) {
-        handleNext();
-        return data[currentQuestionIndex + 1]?.time || 0;
+        const data = await response.json();
+        setQuizData(data);
+        setTimer(data[currentQuestionIndex]?.time);
+      } catch (error) {
+        console.error('Error fetching quiz data:', error.message);
       }
-      return prevTimer - 1;
-    });
-  }, 1000);
+    };
 
-  return () => clearInterval(countdown);
-}, [currentQuestionIndex, data]);
+    fetchQuizData();
+  }, [currentQuestionIndex]);
 
-const handleNext = () => {
-///for submit
-  if(currentQuestionIndex == data.length-1){
-   
-      navigate("/quizCompletion", {
-        state: { quizType : "poll",score: "2",currentQuestionIndex:"4"},
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      setTimer((prevTimer) => {
+        if (prevTimer === 0) {
+           handleNext();
+          return quizData[currentQuestionIndex + 1]?.time;
+        }
+        return prevTimer - 1;
       });
-   
+    }, 1000);
 
-  }else{
-    // for Next
+    return () => clearInterval(countdown);
+  }, [currentQuestionIndex, quizData]);
 
-  clearInterval(timer); // Clear the timer when moving to the next question
+ 
+  const handleNext = async() => {
+    let count= 0;
+    // console.log("userDelt",userAnswer,quizData[currentQuestionIndex].answer);
+    console.log("entered1",userAnswer);
+    console.log("entered2",quizData[currentQuestionIndex].answer);
+    console.log("entered3",currentQuestionIndex);
 
-  // Check if it's the last question
-  if (currentQuestionIndex < data.length - 1) {
-    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-  } else {
-    // Handle quiz completion, e.g., show results
-    console.log('Quiz completed!');
-  }
+    if(
+      userAnswer.text == quizData[currentQuestionIndex].answer.text &&
+      userAnswer.image == quizData[currentQuestionIndex].answer.image 
+      ){
+        console.log("entery gate1 if",userScore);
+        // console.log("userDelt",userAnswer,quizData[currentQuestionIndex].answer);
+         setUserScore((prevScore)=>prevScore+1);
+      
+        //  ++score;
+        ++count;
+        //  console.log("userScore11111",userScore,count);
+      }
 
-  setTimer(data[currentQuestionIndex + 1]?.time || 0);
-  }
-};
+    // For submit 
+    if (currentQuestionIndex == quizData.length - 1) {
+        
+          // console.log("userScore22222222",userScore);
+          navigate('/quizCompletion', {
+                state: { quizType: quizData[0].quizType, score: userScore+count, totalQuestion: quizData.length },
+              });
+  
+    } else {
+      console.log("entery gate2 else");
+      // For Next
+      clearInterval(timer); // Clear the timer when moving to the next question
 
-const currentQuestion = data[currentQuestionIndex];
+      // Check if it's the last question
+      if (currentQuestionIndex < quizData.length - 1) {
+         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+      } else {
+        // Handle quiz completion, e.g., show results
+        console.log('Quiz completed!');
+      }
+
+       setTimer(quizData[currentQuestionIndex + 1]?.time || 0);
+    }
+
+    setUserAnswer({id:"",text:"",image:""});
+
+
+  };
+
+  const currentQuestion = quizData[currentQuestionIndex];
+
+
+  const userSelectedOption = (option) => {
+    // Assuming 'option' is an object with 'text' and 'image' properties
+   console.log("option selected",option);
+    setUserAnswer({
+      id: option?._id ||'',
+      text: option?.text || '',
+      image: option?.image || '',
+    });
+    
+  };
+
+
 
     return <>
     
@@ -169,14 +129,18 @@ const currentQuestion = data[currentQuestionIndex];
 
             <div className="quizContent">
       <div className="quizHeader">
-      <div className="questionCount">0{currentQuestionIndex + 1}/0{data.length}</div>
+      <div className="questionCount">0{currentQuestionIndex + 1}/0{quizData.length}</div>
       <div className="questionTimer">00:{timer >= 10 ? timer:  "0" +timer}s</div>
       </div>
       <div className="quizQuestion">{currentQuestion?.question}</div>
       <div className="quizOptions">
         {currentQuestion?.options.map((option) => (
 
-          <div key={option?.id} className="quizOption">
+          <div key={option?._id} 
+          name = {option?._id}
+          onClick={() => userSelectedOption(option)}
+          className={`quizOption ${userAnswer?.id == option?._id ? "active": ""}`}
+          >
           {option?.image && option?.text ? 
     <>
       <p>{option?.text}</p>
@@ -194,7 +158,7 @@ const currentQuestion = data[currentQuestionIndex];
 
        <button className = "createQuestionContentSubmitBtn" 
       onClick={handleNext}>
-      {currentQuestionIndex == data.length-1 ? 
+      {currentQuestionIndex == quizData.length-1 ? 
       "Submit" : "Next"}</button>
 
      

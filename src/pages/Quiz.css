@@ -79,6 +79,10 @@
     border: solid orange;
 }
 
+.quizOption.active{
+    background-color: #4CAF50;
+}
+
 .quizOption img{
     width:100px;
     /* height: 100px; */
