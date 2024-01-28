@@ -25,7 +25,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
 
-        {/* <Route path = "/" element = {<Dashboard/>}/> */}
+        <Route path = "/" element = {<Dashboard/>}/>
         <Route path = "/analytics" element = {<Analytics/>}/>
         <Route path = "/createQuiz" element = {<CreateQuiz/>}/>
         <Route path = "/createQuestionPage" element = {<CreateQuestionPage/>}/>
@@ -33,8 +33,8 @@ export default function App() {
         {/* <Route path = "/radio" element = {<RadioButton/>}/>
         <Route path = "/deleteBox" element = {<DeleteBox/>}/> */}
        {/* no use of this link <Route path = "/linkShare" element = {<LinkShare link = "this is link"/>}/> */}
-        <Route path = "/quiz" element = {<Quiz/>}/>
-        <Route path = "/quizCompletion" element = {<QuizCompletion/>}/>
+        {/* <Route path = "/quiz" element = {<Quiz/>}/> */}
+        {/* <Route path = "/quizCompletion" element = {<QuizCompletion/>}/> */}
 
 
         {/* <Route path = "/" element = {<CreateQuestion/>}/>
@@ -43,7 +43,7 @@ export default function App() {
         <Route path = "/trend" element = {<TrendingCard/>}/> */}
      
         {/* <Route path = "/" element = {<DeleteBox/>}/> */}
-        {/* <Route path = "/" element = {<QuestionAnalysis/>}/> */}
+        <Route path = "/questionAnalysis" element = {<QuestionAnalysis/>}/>
         {/* <Route path = "/" element = {<PollAnalysis/>}/> */}
        
       </Routes>

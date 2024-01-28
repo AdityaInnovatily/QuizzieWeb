@@ -1,62 +1,110 @@
 import Navbar from "../componenents/Navbar";
 import "./Analytics.css";
 import { Delete, Share, Edit } from '@mui/icons-material';
-
-
+import React, { useState, useEffect } from "react";
+import { getQuizList, deleteQuiz, getQuestions } from "../APIRoutes";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Analytics(){
 
-    let data = [
-        {
-            id:"1",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        {
-            id:"2",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        {
-            id:"3",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        {
-            id:"4",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        {
-            id:"5",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        {
-            id:"6",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        {
-            id:"7",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        {
-            id:"8",
-            quizName:"quiz1",
-            createdAt: "01 jan 2023",
-            impression:150
-        },
-        
-    ];
+    const localStorageUserDetails = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+
+    const navigate = useNavigate();
+    const toastOptions = {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      };
+
+
+    const [quizList,setQuizList] = useState([]);
+
+  useEffect(() => {
+    // Fetch quiz data from the API
+    const fetchQuizList = async () => {
+      try {
+        const response = await fetch(`${getQuizList}/${localStorageUserDetails.userDetails._id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            // Include any additional headers required for your GET request
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch quiz data');
+        }
+
+        const data = await response.json();
+        setQuizList(data);
+
+        console.log("quizList",data);
+      
+      } catch (error) {
+        console.error('Error fetching quiz data:', error.message);
+      }
+    };
+
+    fetchQuizList();
+    
+    }, []);
+
+  
+ 
+    const deleteQuizMethod = async(quizId)=>{
+        console.log("quizId to delete",quizId);
+
+        const response  = await fetch(deleteQuiz, {
+            method: 'POST',
+            headers: {
+              // Authorization: `Bearer ${localStorageUserDetails.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+             quizId:quizId
+            }),
+          });
+
+
+          setQuizList((prevQuizzes) => prevQuizzes.filter((quiz) => quiz._id !== quizId));
+    
+    }
+
+    useEffect(()=>{},[deleteQuizMethod])
+
+  
+
+    const quizLinkCopyHandler = (quizId)=>{
+
+        const tempInput = document.createElement('input');
+        tempInput.value = `${getQuestions}/${quizId}`;
+    
+        // Append the input element to the document
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        tempInput.setSelectionRange(0, 99999); // For mobile devices
+    
+        // Copy the text to the clipboard
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+    
+        toast.error(`link copied to clipboard`, toastOptions);
+
+        // setTimeout(() => {
+        //     navigate("/");
+        //   }, 1000);
+    }
+
+
+    const getQuestionWiseAnalysis = ((quizId)=>{
+
+      navigate("/questionAnalysis", {state:{quizId}});
+
+    })
 
 
     return <>
@@ -82,12 +130,12 @@ export default function Analytics(){
         </tr>
       </thead>
       <tbody>
-        {data.map((quiz) => (
-          <tr key={quiz.id}>
-            <td>{quiz.id}</td>
-            <td>{quiz.quizName}</td>
+        {quizList.map((quiz) => (
+          <tr key={quiz._id}>
+            <td>{quiz._id}</td>
+            <td>{quiz.name}</td>
             <td>{quiz.createdAt}</td>
-            <td>{quiz.impression}</td>
+            <td>{quiz.impressions}</td>
             
             <div className="analyticsTableRowIcons">
 
@@ -95,18 +143,18 @@ export default function Analytics(){
             <Edit/>
             </button>
 
-            <button className="analyticsTableRowDelete">
+            <button className="analyticsTableRowDelete" onClick={()=>deleteQuizMethod(quiz._id)}>
             <Delete/>
             </button>
 
-            <button className="analyticsTableRowShare">
+            <button className="analyticsTableRowShare" onClick={()=>quizLinkCopyHandler(quiz._id)}>
             <Share/>
             </button>
 
             </div>
         
           
-            <td id = {quiz.id}>Question Wise Analysis</td>
+            <td id = {quiz._id} onClick = {()=>getQuestionWiseAnalysis(quiz._id)}>Question Wise Analysis</td>
           </tr>
         ))}
       </tbody>
@@ -116,6 +164,7 @@ export default function Analytics(){
         </div>
 
     </div>
+    <ToastContainer/>
 </div>
 </>
 }

@@ -2,6 +2,7 @@ import "./Quiz.css";
 import React, { useState, useEffect,useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import QuizCompletion from "../componenents/QuizCompletion";
+import { host,updateQuestionResponse } from "../APIRoutes";
 
 
 const Quiz = () => {
@@ -60,9 +61,26 @@ const Quiz = () => {
   const handleNext = async() => {
     let count= 0;
     // console.log("userDelt",userAnswer,quizData[currentQuestionIndex].answer);
-    console.log("entered1",userAnswer);
-    console.log("entered2",quizData[currentQuestionIndex].answer);
+    console.log("entered1",userAnswer.id);
+    console.log("entered2",quizData[currentQuestionIndex]._id);
     console.log("entered3",currentQuestionIndex);
+
+
+    const response  = await fetch(updateQuestionResponse, {
+      method: 'POST',
+      headers: {
+        // Authorization: `Bearer ${localStorageUserDetails.token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        questionId: quizData[currentQuestionIndex]._id,
+        optionId: userAnswer.id
+      }),
+    });
+
+      // let data = await response.json();
+
+      // console.log("questionResponse",data);
 
     if(
       userAnswer.text == quizData[currentQuestionIndex].answer.text &&

@@ -2,15 +2,19 @@ import React, { useState } from 'react'
 import './CreateQuestion.css';
 import { Delete } from '@mui/icons-material';
 import { Add } from '@mui/icons-material';
-import { uploadQuiz,host } from "../APIRoutes";
+import { createQuiz,host } from "../APIRoutes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
 import LinkShare from './LinkShare';
 
 
+
 export default function CreateQuestion({quizName, quizType, placeholderInputQuestion = "Q & A", timerDisplay = "block"}){
 
+    const localStorageUserDetails = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+
+    console.log("localStorage;", localStorageUserDetails);
     const navigate = useNavigate();
     const toastOptions = {
         position: "bottom-right",
@@ -189,12 +193,14 @@ export default function CreateQuestion({quizName, quizType, placeholderInputQues
             "quizName":quizName,
             "quizType": quizType,
             "timer": +(questions[0].timer),
-            "questionDetails":[...questionsArray] 
+            "questionDetails":[...questionsArray],
+            "userId": localStorageUserDetails.userDetails._id
+
             };
 
     // console.log("dafas",req);
 
-    const response  = await fetch(uploadQuiz, {
+    const response  = await fetch(createQuiz, {
         method: 'POST',
         headers: {
           // Authorization: `Bearer ${localStorageUserDetails.token}`,
