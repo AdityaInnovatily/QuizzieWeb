@@ -1,7 +1,9 @@
 import "./Navbar.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar(){
 
+    const navigate = useNavigate();
 
     return <>
     <div className = "navbarPage">
@@ -11,9 +13,9 @@ export default function Navbar(){
     </div>
 
 <div className="navbarSidebar">
-  <button id = "dashboard">Dashboard</button>
-  <button id = "analytics">Analytics</button>
-  <button id = "createQuiz">Create Quiz</button>
+  <button id = "dashboard" onClick = {()=>{navigate("/")}}>Dashboard</button>
+  <button id = "analytics" onClick = {()=>{navigate("/analytics")}}>Analytics</button>
+  <button id = "createQuiz" onClick = {()=>{navigate("/createQuiz")}}>Create Quiz</button>
 </div>
 
 

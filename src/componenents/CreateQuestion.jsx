@@ -2,25 +2,42 @@ import React, { useState } from 'react'
 import './CreateQuestion.css';
 import { Delete } from '@mui/icons-material';
 import { Add } from '@mui/icons-material';
+import { uploadQuiz,host } from "../APIRoutes";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate, Link } from "react-router-dom";
+import LinkShare from './LinkShare';
 
-export default function CreateQuestion({placeholderInputQuestion = "Q &A Questions", timerDisplay = "block"}){
-  const [questionIndex,setQuestionIndex]=useState(0)
+
+export default function CreateQuestion({quizName, quizType, placeholderInputQuestion = "Q & A", timerDisplay = "block"}){
+
+    const navigate = useNavigate();
+    const toastOptions = {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      };
     
+
+  const [questionIndex,setQuestionIndex]=useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+ 
   const initialState={
       pollQuestion:"",
       questionType:"text",
-      timer:"off",
-      ans:"2",
+      timer:"0",
+      ans:"",
       ques:{
           '1':{option1:"", imgUrl1:""},
           '2':{option2:"", imgUrl2:""}
-          // '3':{option3:"", imgUrl3:""},
       }
   }
 
   const [questions,setQuesitons]=useState([initialState])
 
-  const [activeOption, setActiveOption] = useState('off');
+  const [activeOption, setActiveOption] = useState('0');
 
 
   const addQuestionHander=()=>{
@@ -40,6 +57,7 @@ export default function CreateQuestion({placeholderInputQuestion = "Q &A Questio
       const {name,value}=e.target
       const updatedQuestions = questions.map((each, idx) => {
      
+        console.log("name,tarvgt",name,value);
         if(name == "timer"){
            return {...each,[name]:value};
         }
@@ -126,9 +144,73 @@ export default function CreateQuestion({placeholderInputQuestion = "Q &A Questio
  const onQuestionCreationCancel = ()=>{
 
  }
-  const onQuestionCreationSubmit = ()=>{
 
-    console.log("quesitons",questions);
+
+  const onQuestionCreationSubmit = async()=>{
+
+    let questionsArray = [];
+
+    for(let [index,question] of questions.entries()){
+        let questionObj = {};
+
+        let optionsArr1 = Object.values(question.ques);
+
+        const formattedOptions = optionsArr1.map((entry,ind) => {
+            if(!entry[`option${ind+1}`] && !entry[`imgUrl${ind+1}`]){
+                toast.error(`option ${ind+1} is empty at question ${index+1} `, toastOptions);
+            }
+         return {
+            text: entry['option1'] || entry['option2'] || entry['option3'] || entry['option4'],
+            image: entry['imgUrl1'] || entry['imgUrl2'] || entry['imgUrl3'] || entry['imgUrl4']
+        }
+        });
+       
+
+        if(!question.pollQuestion.trim()){
+            toast.error(`question is empty at question ${index+1} `, toastOptions);
+        }
+        if(!question.questionType.trim()){
+            toast.error(`optionType is empty at question ${index+1} `, toastOptions);
+        }
+        if(!question.ans.trim() && quizType == "q&a"){
+            toast.error(`answer is not available for question ${index+1} `, toastOptions);
+        }
+
+        questionObj.questionName = question.pollQuestion;
+        questionObj.optionType = question.questionType;
+        questionObj.options = [...formattedOptions];
+      
+        questionObj.answer = formattedOptions[+(question.ans)-1];
+
+        questionsArray.push(questionObj);
+    }
+
+    let req = {
+            "quizName":quizName,
+            "quizType": quizType,
+            "timer": +(questions[0].timer),
+            "questionDetails":[...questionsArray] 
+            };
+
+    // console.log("dafas",req);
+
+    const response  = await fetch(uploadQuiz, {
+        method: 'POST',
+        headers: {
+          // Authorization: `Bearer ${localStorageUserDetails.token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(req),
+      });
+
+        let data = await response.json();
+
+        if(data.msg){
+            alert(data.msg);
+        }else{
+            setIsModalOpen(true);
+        }
+    console.log("quesitons",data);
   }
 
 
@@ -169,15 +251,15 @@ export default function CreateQuestion({placeholderInputQuestion = "Q &A Questio
                 </div>
 
                 <div className='optionType'>
-                    <div className=''>
+                    <div>
                         <input type="radio" name="questionType" value="text" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'text'}/>
                         <label>Text</label>
                     </div>
-                    <div className='flex gap-1'>
+                    <div>
                         <input type="radio" id="css" name="questionType" value="image" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'image'}/>
                         <label for="css">Image URL</label>
                     </div>
-                    <div className='flex gap-1'>
+                    <div>
                         <input type="radio" id="javascript" name="questionType" value="text&image" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'text&image'}/>
                         <label for="javascript">Text & Image URL</label>
                     </div>
@@ -231,10 +313,10 @@ export default function CreateQuestion({placeholderInputQuestion = "Q &A Questio
                     <div className='questionTimer'>
                         <div 
                         onClick={(e)=>{
-                            e.target={name:"timer",value:"off"}
+                            e.target={name:"timer",value:"0"}
                             onInputChange(e)
                         }}
-                        className={`radio-buttonTimerOption ${activeOption === 'off' ? 'active' : ''}`}
+                        className={`radio-buttonTimerOption ${questions[questionIndex].timer === '0' ? 'active' : ''}`}
                         >Off</div>
 
                         <div
@@ -243,7 +325,7 @@ export default function CreateQuestion({placeholderInputQuestion = "Q &A Questio
                              onInputChange(e);
                              }}
                        
-                        className={`radio-buttonTimerOption ${activeOption === '5' ? 'active' : ''}`}>
+                        className={`radio-buttonTimerOption ${questions[questionIndex].timer === '5' ? 'active' : ''}`}>
                         5 sec</div>
 
                         <div
@@ -261,15 +343,17 @@ export default function CreateQuestion({placeholderInputQuestion = "Q &A Questio
         <div className="createQuestionContentSubmitCancel">
             
             <button id="createQuestionContentCancelBtn" onClick={onQuestionCreationCancel}>Cancel</button>
-            <button id="createQuestionContentSubmitBtn" onClick = {onQuestionCreationSubmit}>Submit</button>
+            <button id="createQuestionContentSubmitBtn" onClick = {onQuestionCreationSubmit}>Create Quiz</button>
 
         </div>
-
-
 
         
+        {isModalOpen && <LinkShare link = "http://localhost:5000/quiz/getquestions/65b5e4f721ae83bb7629edd8"/>}
+        
         </div>
+        <ToastContainer />
     </div>
+    
   )
 }
 

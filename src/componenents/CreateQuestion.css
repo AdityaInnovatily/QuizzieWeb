@@ -31,7 +31,7 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    border:solid yellow;
+    /* border:solid yellow; */
     width:100%;
 }
 
@@ -172,7 +172,7 @@
     flex-direction: column;
     align-items: start;
     justify-content: center;
-    border:solid blue;
+    /* border:solid blue; */
 
   }
 
@@ -202,7 +202,7 @@
     flex-direction: row;
     justify-content: left;
     align-items: center;
-    border: solid red;
+    /* border: solid red; */
     padding:10px;
 }
 
@@ -220,8 +220,6 @@
     /* background-color: white; */
 }
 
-
-
  #createQuestionContentCancelBtn, 
  #createQuestionContentSubmitBtn{
     width: 180px;
@@ -231,12 +229,13 @@
     border-radius: 10px;
     background-color: #4CAF50;
     border: none;
-
+    color:white;
   }
 
   #createQuestionContentCancelBtn{
     box-shadow: 0 0 25px 0 rgba(0,0,0,.15);
     background-color: white;
+    color:black;
   }
 
 
@@ -255,7 +254,7 @@
     .optionType{
       
         width:100%;
-        border:solid pink;
+        /* border:solid pink; */
     }
 
 
@@ -278,7 +277,7 @@
       height:10px;
       left:18px;
       bottom:30px;
-      
+      /* font-weight: normal; */
     }
 
     .createQuestionContentQuestionButton{
@@ -294,6 +293,10 @@
       font-size: small;
       color:grey;
       height:5px;
+  }
+
+  .optionType label{
+    font-size: 15px;
   }
 
     .createQuestionContentQuestionType{
@@ -317,7 +320,7 @@
     .createQuestionOptions{
       display: flex;
       flex-direction: column;
-      border:solid greenyellow;
+      /* border:solid greenyellow; */
       /* width:100%; */
       row-gap: 10px;
       margin:10px 10px;
@@ -339,19 +342,18 @@
     
     .createQuestionTimer {
       width:80%;
-      /* flex-direction: row;
-      row-gap: 0; */
-      font-size: 20px;
-
-
+      margin: 0 0 15px 0;
     }
 
+    .createQuestionTimer p{
+      font-size: 15px;
+    }
 
     .questionTimer{
       display: flex;
       justify-content: space-evenly;
       width:100%;
-      border:solid red;
+      /* border:solid red; */
       /* flex-direction: row; */
     }
 

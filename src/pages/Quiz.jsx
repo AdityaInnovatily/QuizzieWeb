@@ -1,95 +1,124 @@
 import "./Quiz.css";
 import React, { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import QuizCompletion from "../componenents/QuizCompletion";
 
-export default function Quiz(){
+const Quiz = ()=>{
+  const navigate = useNavigate();
 
-    let data = [{
-        id:"11",
-        question:"What is your name ?",
-        options: [{
-            id:"1",
-            text:"option1",
-            image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-        },
-        {
-            id:"2",
-            text:"option2",
-            image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-        },
-        {
-            id:"3",
-            text:"option3",
-            image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-        },
-        {
-            id:"4",
-            text:"option4",
-            image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-        },
-    ],
-    time:10
-},
-{
-    id:"22",
-    question:"What is your name2 ?",
-    options: [{
-        id:"1",
-        text:"option1",
-        image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-    },
-    {
-        id:"2",
-        text:"option2",
-        image:""
-    },
-    {
-        id:"3",
-        text:"option3",
-        image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
-    },
-    {
-        id:"4",
-        text:"option4",
-        image:""
-    },
-],
-time:10
-},
+  let data = async ()=>{
 
-{
-    id:"33",
-    question:"What is your name3 ?",
-    options: [{
-        id:"1",
-        text:"option1",
-        image:""
+const response = await fetch("http://localhost:5000/quiz/getquestions/65b5e4f721ae83bb7629edd8", {
+    method: 'GET',
+    headers: {
+      // Add headers if needed
+      'Content-Type': 'application/json',
+      // Include any additional headers required for your GET request
     },
-    {
-        id:"2",
-        text:"option2",
-        image:""
-    },
-    {
-        id:"3",
-        text:"option3",
-        image:""
-    },
-    {
-        id:"4",
-        text:"option4",
-        image:""
-    },
-],
-time:10
-},
+    // No need for the 'body' property in a GET request
+  });
+  
+  let datak = await response.json();
 
-];
+  return datak;
+  }
+
+  useEffect(()=>{
+    data();
+  },[])
 
 
+  
+//     let data = [{
+//         id:"11",
+//         question:"What is your name ?",
+//         time:10,
+//         quizType:"poll",
+//         options: [{
+//             id:"1",
+//             text:"option1",
+//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
+//         },
+//         {
+//             id:"2",
+//             text:"option2",
+//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
+//         },
+//         {
+//             id:"3",
+//             text:"option3",
+//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
+//         },
+//         {
+//             id:"4",
+//             text:"option4",
+//             image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
+//         },
+//     ]
+   
+// },
+// {
+//     id:"22",
+//     question:"What is your name2 ?",
+//     options: [{
+//         id:"1",
+//         text:"option1",
+//         image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
+//     },
+//     {
+//         id:"2",
+//         text:"option2",
+//         image:""
+//     },
+//     {
+//         id:"3",
+//         text:"option3",
+//         image:"https://images.unsplash.com/photo-1621155346337-1d19476ba7d6?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGltYWdlfGVufDB8fDB8fHww"
+//     },
+//     {
+//         id:"4",
+//         text:"option4",
+//         image:""
+//     },
+// ],
+// time:10
+// },
+
+// {
+//     id:"33",
+//     question:"What is your name3 ?",
+//     options: [{
+//         id:"1",
+//         text:"option1",
+//         image:""
+//     },
+//     {
+//         id:"2",
+//         text:"option2",
+//         image:""
+//     },
+//     {
+//         id:"3",
+//         text:"option3",
+//         image:""
+//     },
+//     {
+//         id:"4",
+//         text:"option4",
+//         image:""
+//     },
+// ],
+// time:10
+// },
+
+// ];
 
 
 const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-const [timer, setTimer] = useState(data[0]?.time);
+const [qnaCompleted, setQnaCompleted] = useState(false);
+const [pollCompleted, setPollCompleted] = useState(false);
+
+const [timer, setTimer] = useState(data[0].time);
 
 useEffect(() => {
   const countdown = setInterval(() => {
@@ -106,6 +135,17 @@ useEffect(() => {
 }, [currentQuestionIndex, data]);
 
 const handleNext = () => {
+///for submit
+  if(currentQuestionIndex == data.length-1){
+   
+      navigate("/quizCompletion", {
+        state: { quizType : "poll",score: "2",currentQuestionIndex:"4"},
+      });
+   
+
+  }else{
+    // for Next
+
   clearInterval(timer); // Clear the timer when moving to the next question
 
   // Check if it's the last question
@@ -117,10 +157,10 @@ const handleNext = () => {
   }
 
   setTimer(data[currentQuestionIndex + 1]?.time || 0);
+  }
 };
 
 const currentQuestion = data[currentQuestionIndex];
-
 
     return <>
     
@@ -156,9 +196,14 @@ const currentQuestion = data[currentQuestionIndex];
       onClick={handleNext}>
       {currentQuestionIndex == data.length-1 ? 
       "Submit" : "Next"}</button>
+
+     
                
             </div>
+            
         </div>
-    
+      
     </>
 }
+
+export default Quiz;

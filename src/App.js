@@ -14,6 +14,9 @@ import DeleteBox from "./componenents/DeleteBox";
 import QuestionAnalysis from "./pages/QuestionAnalysis";
 import PollAnalysis from "./pages/PollAnalysis";
 import Quiz from "./pages/Quiz";
+import CreateQuestionPage from "./pages/CreateQuestionPage";
+import LinkShare from "./componenents/LinkShare";
+import QuizCompletion from "./componenents/QuizCompletion";
 
 export default function App() {
   return (
@@ -21,18 +24,28 @@ export default function App() {
       <Routes>
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
-        <Route path = "/dashboard" element = {<Dashboard/>}/>
-        <Route path = "/createQuiz" element = {<CreateQuiz/>}/>
-        <Route path = "/" element = {<CreateQuestion/>}/>
-        <Route path = "/radio" element = {<RadioButton/>}/>
-        <Route path = "/t" element = {<Trial/>}/>
-        <Route path = "/trend" element = {<TrendingCard/>}/>
+
+        {/* <Route path = "/" element = {<Dashboard/>}/> */}
         <Route path = "/analytics" element = {<Analytics/>}/>
+        <Route path = "/createQuiz" element = {<CreateQuiz/>}/>
+        <Route path = "/createQuestionPage" element = {<CreateQuestionPage/>}/>
+
+        {/* <Route path = "/radio" element = {<RadioButton/>}/>
+        <Route path = "/deleteBox" element = {<DeleteBox/>}/> */}
+       {/* no use of this link <Route path = "/linkShare" element = {<LinkShare link = "this is link"/>}/> */}
+        <Route path = "/quiz" element = {<Quiz/>}/>
+        <Route path = "/quizCompletion" element = {<QuizCompletion/>}/>
+
+
+        {/* <Route path = "/" element = {<CreateQuestion/>}/>
+        <Route path = "/radio" element = {<RadioButton/>}/> */}
+        {/* <Route path = "/t" element = {<Trial/>}/>
+        <Route path = "/trend" element = {<TrendingCard/>}/> */}
+     
         {/* <Route path = "/" element = {<DeleteBox/>}/> */}
         {/* <Route path = "/" element = {<QuestionAnalysis/>}/> */}
         {/* <Route path = "/" element = {<PollAnalysis/>}/> */}
-        {/* <Route path = "/" element = {<Quiz/>}/> */}
-
+       
       </Routes>
     </BrowserRouter>
   );

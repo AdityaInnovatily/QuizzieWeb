@@ -80,7 +80,7 @@ export default function Dashboard(){
             </p>
            
 
-<div className="dashboard_quizData_Content" >
+<div className="dashboard_quizData_Content">
 
 {data.map((item, index) => (
         <div key={index} className="dashboard_quizData">
