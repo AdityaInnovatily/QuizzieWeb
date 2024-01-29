@@ -1,12 +1,22 @@
 import "./CreateQuiz.css";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useLocation } from "react-router-dom";
+
 
 
 export default function CreateQuiz(){
 
+  const location = useLocation();
+  const { state } = location;
+  const { editQuizId, editQuizName, editQuizType } = state;
+
+
+  
+  console.log("editQuizDetails",editQuizId,editQuizName,editQuizType);
+  
     const navigate = useNavigate();
     const toastOptions = {
       position: "bottom-right",
@@ -16,8 +26,10 @@ export default function CreateQuiz(){
       theme: "dark",
     };
 
-    const [quizType, setQuizType] = useState("q&a");
-    const [quizName, setQuizName] = useState("");
+    const [quizType, setQuizType] = useState(editQuizType ? editQuizType : "q&a");
+    const [quizName, setQuizName] = useState(editQuizName ? editQuizName : "");
+    
+
 
     const handleButtonClick = (selectedQuizType) => {
       setQuizType(selectedQuizType);
@@ -37,7 +49,7 @@ export default function CreateQuiz(){
     <div className="createQuizContent">
 
         <div className="createQuizContentQuizNameInput">
-            <input id = "quizNameInput" name = "quizName" onChange={(e) => handleChange(e)} placeholder = "Quiz name" />
+            <input id = "quizNameInput" name = "quizName" value={quizName} onChange={(e) => handleChange(e)} placeholder = "Quiz name" />
         </div>
 
         <div className="createQuizContentQuizType">
@@ -89,7 +101,7 @@ export default function CreateQuiz(){
               }
               else{
               navigate("/createQuestionPage", {
-                    state: { quizName, quizType },
+                    state: { editQuizId, quizName, quizType },
                   });
             }
             }}>Submit</button>

@@ -5,18 +5,34 @@ import { useLocation } from "react-router-dom";
 import { getQuestions } from "../APIRoutes";
 import React, { useState, useEffect } from "react";
 
-export default function QuestionAnalysis({boxes =[
-    {text:"people Attempted the question"},
-{text:"people Answered Correctly"},
-{text:"people Answered Incorrectly"}
-] }){
+export default function QuestionAnalysis(){
 
     const location = useLocation();
     const { state } = location;
 
-    const {quizId} = state;
+    const {quizId,quizName, quizType,quizImpressions,quizCreatedAt} = state;
 
     const [questionList,setQuestionList] = useState([]);
+
+    let boxes =[
+      {text:"people Attempted the question"},
+  {text:"people Answered Correctly"},
+  {text:"people Answered Incorrectly"}
+  ] 
+
+    // console.log("qunnasf",state);
+    // if(quizType == "q&a"){
+
+   
+
+    // }else{
+    //   boxes =[
+    //     {text:"option1"},
+    // {text:"option2"},
+    // {text:"option3"},
+    // {text:"option4"}
+    // ] 
+    // }
 
     useEffect(() => {
         // Fetch quiz data from the API
@@ -100,13 +116,13 @@ export default function QuestionAnalysis({boxes =[
 
             <div className="questionAnalysisHeader">
             <div className="questionAnalysisHeaderLeft">
-                    <p>{"questionList[0].quizName"} Question Analysis</p>
+                    <p>{quizName} Question Analysis</p>
                 </div>
 
                 <div className="questionAnalysisImpressions">
 
-                    <p>{`Created on: ${"questionList[0].createdOn"}`}</p>
-                    <p>{`Impressions: ${"questionList[0].impressions"}`}</p>
+                    <p>{`Created on: ${quizCreatedAt}`}</p>
+                    <p>{`Impressions: ${quizImpressions}`}</p>
                    
                 </div>
             </div>
@@ -118,9 +134,9 @@ export default function QuestionAnalysis({boxes =[
       <p id="questionAnalysisQuestion">{obj.question}</p>
 
       <div className="questionAnalysisQuestionDetailsBoxes">
-        {boxes.map((box,boxIndex) => (
+        {quizType == "q&a" && boxes.map((box,boxIndex) => (
           <div className="questionAnalysisQuestionDetailsBox">
-            {/* <p>{"obj.attempted"}</p> */}
+          
             {boxIndex == 0 ?
             <p>{obj.options.reduce((sum, option) => sum + option.count, 0)}</p>:""
             }
@@ -148,6 +164,19 @@ export default function QuestionAnalysis({boxes =[
              <p>{box.text}</p>
           </div>
         ))}
+
+
+        {quizType == "poll" && boxes.map((box,boxIndex) => (
+          <div className="questionAnalysisQuestionDetailsBox">
+          
+            <p>{obj.options[boxIndex].count}</p>
+            
+             <p>{obj.options[boxIndex]?.text ? obj.options[boxIndex]?.text : `option${boxIndex+1}`}</p>
+          </div>
+        ))}
+
+
+
 
       {/* <p>  {boxes[0].text} </p> */}
       </div>

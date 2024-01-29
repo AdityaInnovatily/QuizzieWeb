@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './CreateQuestion.css';
 import { Delete } from '@mui/icons-material';
 import { Add } from '@mui/icons-material';
@@ -10,7 +10,7 @@ import LinkShare from './LinkShare';
 
 
 
-export default function CreateQuestion({quizName, quizType, placeholderInputQuestion = "Q & A", timerDisplay = "block"}){
+export default function CreateQuestion({quizId, quizName, quizType, placeholderInputQuestion, timerDisplay}){
 
     const localStorageUserDetails = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
 
@@ -23,7 +23,41 @@ export default function CreateQuestion({quizName, quizType, placeholderInputQues
         draggable: true,
         theme: "dark",
       };
+      
+    //   useEffect(()=>{
+
+    //         const fetchQuestionList = async () => {
+    //             try {
+    //               const response = await fetch(`${getQuestions}/${quizId}`, {
+    //                 method: 'GET',
+    //                 headers: {
+    //                   'Content-Type': 'application/json',
+    //                   // Include any additional headers required for your GET request
+    //                 },
+    //               });
+          
+    //               if (!response.ok) {
+    //                 throw new Error('Failed to fetch quiz data');
+    //               }
+          
+    //               const data = await response.json();
+    //             //   setQuestionList(data);
+          
+    //               console.log("questionList",data);
+                
+    //             } catch (error) {
+    //               console.error('Error fetching quiz data:', error.message);
+    //             }
+    //           };
+
+    //           if(quizId){
+          
+    //                 fetchQuestionList();
+    //             }
+
+    //   },[])
     
+
 
   const [questionIndex,setQuestionIndex]=useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);

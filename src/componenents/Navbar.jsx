@@ -15,7 +15,12 @@ export default function Navbar(){
 <div className="navbarSidebar">
   <button id = "dashboard" onClick = {()=>{navigate("/")}}>Dashboard</button>
   <button id = "analytics" onClick = {()=>{navigate("/analytics")}}>Analytics</button>
-  <button id = "createQuiz" onClick = {()=>{navigate("/createQuiz")}}>Create Quiz</button>
+  <button id = "createQuiz" onClick = {()=>{navigate("/createQuiz",{state:{
+              editQuizId:"",
+              editQuizName:"",
+              editQuizType:""
+              }
+            })}}>Create Quiz</button>
 </div>
 
 

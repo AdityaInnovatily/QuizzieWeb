@@ -99,11 +99,23 @@ export default function Analytics(){
         //   }, 1000);
     }
 
+    const getQuestionWiseAnalysis = ((quiz)=>{
 
-    const getQuestionWiseAnalysis = ((quizId)=>{
-
-      navigate("/questionAnalysis", {state:{quizId}});
-
+      const originalDateString = quiz.createdAt;
+      const originalDate = new Date(originalDateString);
+      
+      const options = { day: "numeric", month: "short", year: "numeric" };
+      const formattedDate = originalDate.toLocaleDateString("en-US", options);
+      
+      // console.log(formattedDate); // Output: "28 Jan, 2024"
+      console.log("quizTypep",quiz);
+      navigate("/questionAnalysis", {state: {
+        quizId: quiz._id,
+        quizName: quiz.name,
+        quizType:quiz.quizType,
+        quizImpressions: quiz.impressions,
+        quizCreatedAt: formattedDate,
+      },});
     })
 
 
@@ -139,7 +151,15 @@ export default function Analytics(){
             
             <div className="analyticsTableRowIcons">
 
-            <button className="analyticsTableRowEdit">
+            <button className="analyticsTableRowEdit" 
+            onClick = {()=>{navigate("/createQuiz",
+            {state:{
+              editQuizId:quiz._id,
+              editQuizName:quiz.name,
+              editQuizType:quiz.quizType
+              }
+            })
+            }}>
             <Edit/>
             </button>
 
@@ -154,7 +174,7 @@ export default function Analytics(){
             </div>
         
           
-            <td id = {quiz._id} onClick = {()=>getQuestionWiseAnalysis(quiz._id)}>Question Wise Analysis</td>
+            <td id = {quiz._id} onClick = {()=>getQuestionWiseAnalysis(quiz)}>Question Wise Analysis</td>
           </tr>
         ))}
       </tbody>
