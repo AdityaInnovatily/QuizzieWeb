@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import './CreateQuestion.css';
 import { Delete } from '@mui/icons-material';
 import { Add } from '@mui/icons-material';
-import { createQuiz,host } from "../APIRoutes";
+import { createQuiz,host, updateQuiz, getQuestions } from "../APIRoutes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import LinkShare from './LinkShare';
+
+
 
 
 
@@ -14,7 +16,8 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
 
     const localStorageUserDetails = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
 
-    console.log("localStorage;", localStorageUserDetails);
+    console.log("createQuestionPage;;",quizId, quizName);
+    
     const navigate = useNavigate();
     const toastOptions = {
         position: "bottom-right",
@@ -24,56 +27,54 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
         theme: "dark",
       };
       
-    //   useEffect(()=>{
+      useEffect(()=>{
 
-    //         const fetchQuestionList = async () => {
-    //             try {
-    //               const response = await fetch(`${getQuestions}/${quizId}`, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                   'Content-Type': 'application/json',
-    //                   // Include any additional headers required for your GET request
-    //                 },
-    //               });
+            const fetchQuestionList = async () => {
+                try {
+                  const response = await fetch(`${getQuestions}/${quizId}`, {
+                    method: 'GET',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      // Include any additional headers required for your GET request
+                    },
+                  });
           
-    //               if (!response.ok) {
-    //                 throw new Error('Failed to fetch quiz data');
-    //               }
+                  if (!response.ok) {
+                    throw new Error('Failed to fetch quiz data');
+                  }
           
-    //               const data = await response.json();
-    //             //   setQuestionList(data);
+                  const data = await response.json();
+                //   setQuestionList(data);
+                setQuesitons(data);
           
-    //               console.log("questionList",data);
+                  console.log("questionListzzzzzzzzz",data);
                 
-    //             } catch (error) {
-    //               console.error('Error fetching quiz data:', error.message);
-    //             }
-    //           };
+                } catch (error) {
+                  console.error('Error fetching quiz data:', error.message);
+                }
+              };
 
-    //           if(quizId){
+              if(quizId){
           
-    //                 fetchQuestionList();
-    //             }
+                    fetchQuestionList();
+                }
 
-    //   },[])
+      },[])
     
-
 
   const [questionIndex,setQuestionIndex]=useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
  
   const initialState={
-      pollQuestion:"",
-      questionType:"text",
-      timer:"0",
-      ans:"",
-      ques:{
-          '1':{option1:"", imgUrl1:""},
-          '2':{option2:"", imgUrl2:""}
-      }
-  }
+      question:"",
+      optionType:"text",
+      time:"0",
+      answer:{text:process.env.REACT_APP_UNIQUE_KEY_FOR_ANS, image:""},
+      options:[{text:"", image:""},{text:"", image:""}]
+      
+        }
 
-  const [questions,setQuesitons]=useState([initialState])
+  const [questions,setQuesitons]=useState([initialState]);
 
   const [activeOption, setActiveOption] = useState('0');
 
@@ -86,18 +87,24 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
   }
 
   const removeQuestionhandler=(index)=>{
-      const newQuestion= questions.filter((each,idx)=>idx!==index)
-      setQuesitons(newQuestion)
-      setQuestionIndex(prev=>prev-1)
+      const newQuestion= questions.filter((each,idx)=>idx!==index);
+      setQuesitons(newQuestion);
+      setQuestionIndex(prev=>prev-1);
   }
 
   const onInputChange=(e)=>{
       const {name,value}=e.target
+    
+
       const updatedQuestions = questions.map((each, idx) => {
-     
-        console.log("name,tarvgt",name,value);
-        if(name == "timer"){
+        
+        if(name == "time"){
            return {...each,[name]:value};
+        }
+
+        if(name == "answer"){
+
+            return idx === questionIndex ?{...each,[name]: each.options[value]}:each;
         }
 
           return idx === questionIndex ? { ...each, [name]: value } : each;
@@ -110,74 +117,70 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
   }
 
   const onQuesInputChange=(e)=>{
+
       const {name,value}=e.target
-      let arr=name.split(":")
-      let optNo=arr[0]
-      let type=arr[1]
+      let index = name[name.length-1];
+      let field = name.slice(0,name.length-1);
 
-      const data={
-          ...questions[questionIndex].ques,
-          [optNo]:{...questions[questionIndex].ques[optNo], [type]:value}
-      }
-      const updatedQuestions = questions.map((each, idx) => {
-          return idx === questionIndex ? { ...each, ques: data } : each;
-      });
-      setQuesitons(updatedQuestions);
+     
+        const updatedQuestions = questions.map((each, idx) => {
+            if (idx === questionIndex) {
+              const updatedOptions = each.options.map((option, optIndex) => {
+                return optIndex === parseInt(index)
+                  ? { ...option, [field]: value }
+                  : option;
+              });
+        
+              return { ...each, options: updatedOptions };
+            } else {
+              return each;
+            }
+          });
+
+
+    setQuesitons(updatedQuestions);
+
   }
 
-  const addnewOption=()=>{
-    // console.log("addnew Optoins",questions);
-    let quesObj = questions[questionIndex].ques;
 
-    let newQuestionKey = Object.keys(quesObj).length +1;
 
-      const newQuestion = {
-      [newQuestionKey]: {
-          [`option${newQuestionKey}`]: "",
-          [`imgUrl${newQuestionKey}`]: "",
-      },
-      };
-      
-      const updatedQuestion=questions.map((each,idx)=>{
-          return idx === questionIndex ? {...each,ques:{...each.ques,...newQuestion}} : each;
-      });
-
-      setQuesitons(updatedQuestion);
-  }
+const addnewOption = () => {
+    // Clone the current state
+    const updatedQuestions = [...questions];
+  
+    // Create a new option object
+    const newOption = { text: "", image: "" };
+  
+    // Update the options for the current question
+    updatedQuestions[questionIndex].options.push(newOption);
+  
+    // Update the state with the new options
+    setQuesitons(updatedQuestions);
+  };
 
  
 
   const removeOption = (delIndex) => {
 
     console.log("inded",delIndex);
-    setQuesitons((prevQuestions) => {
-      const updatedQuestions = [...prevQuestions];
-  
-      // Create a copy of the question object in the state without the specified entry
-      const updatedQuestion = { ...updatedQuestions[questionIndex] };
-      updatedQuestion.ques = { ...updatedQuestion.ques };
 
-  
-    let optionsLength = Object.keys(updatedQuestion.ques).length;
+    const updatedQuestions = questions.map((each, idx) => {
+        if (idx === questionIndex) {
+          const updatedOptions = each.options.filter((option, optIndex) => {
+            return optIndex != parseInt(delIndex)
+          });
     
-      if(optionsLength == 4){
-
-        if(delIndex ==2){
-        updatedQuestion.ques[3].option3 = updatedQuestion.ques[4].option4;
-        updatedQuestion.ques[3].imgUrl3 = updatedQuestion.ques[4].imgUrl4;
+          return { ...each, options: updatedOptions };
+        } else {
+          return each;
         }
-        delete updatedQuestion.ques[4];
-        
-      }else{
-        delete updatedQuestion.ques[3];
-      }
-   
-      // Update the questions array with the modified question object
-      updatedQuestions[questionIndex] = { ...updatedQuestion };
-  
-      return updatedQuestions;
-    });
+      });
+
+      setQuesitons(updatedQuestions);
+
   };
+
+
   
  const onQuestionCreationCancel = ()=>{
 
@@ -186,55 +189,50 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
 
   const onQuestionCreationSubmit = async()=>{
 
-    let questionsArray = [];
+        console.log("questissns", questions);
+    
+        questions.map((question,index)=>{  
 
-    for(let [index,question] of questions.entries()){
-        let questionObj = {};
-
-        let optionsArr1 = Object.values(question.ques);
-
-        const formattedOptions = optionsArr1.map((entry,ind) => {
-            if(!entry[`option${ind+1}`] && !entry[`imgUrl${ind+1}`]){
-                toast.error(`option ${ind+1} is empty at question ${index+1} `, toastOptions);
-            }
-         return {
-            text: entry['option1'] || entry['option2'] || entry['option3'] || entry['option4'],
-            image: entry['imgUrl1'] || entry['imgUrl2'] || entry['imgUrl3'] || entry['imgUrl4']
-        }
-        });
-       
-
-        if(!question.pollQuestion.trim()){
+            if(!question.question.trim()){
             toast.error(`question is empty at question ${index+1} `, toastOptions);
         }
-        if(!question.questionType.trim()){
+        if(!question.optionType.trim()){
             toast.error(`optionType is empty at question ${index+1} `, toastOptions);
         }
-        if(!question.ans.trim() && quizType == "q&a"){
+        if(question?.answer?.text == process.env.REACT_APP_UNIQUE_KEY_FOR_ANS && quizType == "q&a"){
             toast.error(`answer is not available for question ${index+1} `, toastOptions);
-        }
-
-        questionObj.questionName = question.pollQuestion;
-        questionObj.optionType = question.questionType;
-        questionObj.options = [...formattedOptions];
-      
-        questionObj.answer = formattedOptions[+(question.ans)-1];
-
-        questionsArray.push(questionObj);
-    }
+        }})
+     
 
     let req = {
+            "quizId": quizId,
             "quizName":quizName,
             "quizType": quizType,
-            "timer": +(questions[0].timer),
-            "questionDetails":[...questionsArray],
+            "time": questions[0].time,
+            "questionDetails":[...questions],
             "userId": localStorageUserDetails.userDetails._id
 
             };
 
-    // console.log("dafas",req);
+    if(quizId){
+        const responseUpdateQuiz  = await fetch(updateQuiz, {
+            method: 'POST',
+            headers: {
+              // Authorization: `Bearer ${localStorageUserDetails.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(req),
+          });
 
-    const response  = await fetch(createQuiz, {
+          let data = await responseUpdateQuiz.json();
+
+       
+            setIsModalOpen(true);
+    
+
+    }else{
+
+    const responseCreateQuiz  = await fetch(createQuiz, {
         method: 'POST',
         headers: {
           // Authorization: `Bearer ${localStorageUserDetails.token}`,
@@ -243,14 +241,16 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
         body: JSON.stringify(req),
       });
 
-        let data = await response.json();
+      let data = await responseCreateQuiz.json();
 
         if(data.msg){
             alert(data.msg);
         }else{
             setIsModalOpen(true);
         }
-    console.log("quesitons",data);
+    }
+
+
   }
 
 
@@ -278,8 +278,8 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
             </div>
 
             <div className='createQuestionContentQuestionNameInput'>
-                <input type="text" id = "questionNameInput" name='pollQuestion' 
-                value={questions[questionIndex]?.pollQuestion} 
+                <input type="text" id = "questionNameInput" name='question' 
+                value={questions[questionIndex]?.question} 
                 onChange={onInputChange} placeholder= {placeholderInputQuestion}/>
             </div>
 
@@ -292,15 +292,15 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
 
                 <div className='optionType'>
                     <div>
-                        <input type="radio" name="questionType" value="text" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'text'}/>
+                        <input type="radio" name="optionType" value="text" onChange={onInputChange} checked={questions[questionIndex]?.optionType === 'text'}/>
                         <label>Text</label>
                     </div>
                     <div>
-                        <input type="radio" id="css" name="questionType" value="image" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'image'}/>
+                        <input type="radio" id="css" name="optionType" value="image" onChange={onInputChange} checked={questions[questionIndex]?.optionType === 'image'}/>
                         <label for="css">Image URL</label>
                     </div>
                     <div>
-                        <input type="radio" id="javascript" name="questionType" value="text&image" onChange={onInputChange} checked={questions[questionIndex]?.questionType === 'text&image'}/>
+                        <input type="radio" id="javascript" name="optionType" value="text&image" onChange={onInputChange} checked={questions[questionIndex]?.optionType === 'text&image'}/>
                         <label for="javascript">Text & Image URL</label>
                     </div>
                 </div>
@@ -308,26 +308,34 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
 
             <div className='createQuestionContentOptionWithTimer'>
             <div className='createQuestionOptions'>
-                    {Object.keys(questions[questionIndex]?.ques).map((each,index)=>{
+                    {questions[questionIndex]?.options.map((each,index)=>{
+                        {/* console.log("optionsss",each); */}
                         return (
                             <div className='createQuestionOption'>
-                                <input type="radio" name="ans" value={index+1} onChange={onInputChange} checked={questions[questionIndex]?.ans === (index+1).toString()}/>
+                                <input type="radio" name="answer" 
+                                value={index} 
+                                onChange={onInputChange} 
+                                checked={
+                                   
+                                    JSON.stringify(questions[questionIndex]?.answer) === JSON.stringify(questions[questionIndex].options[index])
+                                    }
+                                    />
 
-                                {(questions[questionIndex]?.questionType==="text&image" || questions[questionIndex]?.questionType==="text") &&
+                                {(questions[questionIndex]?.optionType==="text&image" || questions[questionIndex]?.optionType==="text") &&
                                 <input type="text"
                                 onChange={onQuesInputChange}
-                                value={questions[questionIndex]?.ques?.[index+1][`option${index+1}`]}
-                                name={`${index+1}:option${index+1}`}
-                                placeholder={(questions[questionIndex]?.questionType==="text" || questions[questionIndex]?.questionType==="text&image")  ? 'Text':"Image Url"} 
-                                className={`radio-buttonOption ${questions[questionIndex]?.ans === (index+1).toString() ?"active":""}  `} />}
+                                value={questions[questionIndex]?.options[index].text}
+                                name= {`text${index}`}
+                                placeholder={(questions[questionIndex]?.optionType==="text" || questions[questionIndex]?.optionType==="text&image")  ? 'Text':"Image Url"} 
+                                className={`radio-buttonOption ${JSON.stringify(questions[questionIndex]?.answer) === JSON.stringify(questions[questionIndex]?.options[index]) ? "active":""}`} />}
 
-                                {(questions[questionIndex]?.questionType==="text&image" || questions[questionIndex]?.questionType==="image") &&
+                                {(questions[questionIndex]?.optionType==="text&image" || questions[questionIndex]?.optionType==="image") &&
                                 <input type="text" 
                                 onChange={onQuesInputChange}  
-                                value={questions[questionIndex]?.ques?.[index+1][`imgUrl${index+1}`]}
-                                name={`${index+1}:imgUrl${index+1}`}
+                                value={questions[questionIndex]?.options[index].image}
+                                name= {`image${index}`}
                                 placeholder="Image Url"
-                                className={`radio-buttonOption ${questions[questionIndex]?.ans === (index+1).toString() ?"active":""}  `} />
+                                className={`radio-buttonOption ${JSON.stringify(questions[questionIndex]?.answer) === JSON.stringify(questions[questionIndex]?.options[index]) ? "active":""}`} />
                                 }
                               
 
@@ -342,7 +350,7 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
                         )
                     }) }
                     
-                    {Object.keys(questions[questionIndex]?.ques).length<4 &&
+                    {questions[questionIndex]?.options.length<4 &&
                     <div >
                        <button onClick={()=>addnewOption()} className='createQuestionAddOption'>Add Option</button>
                     </div>}
@@ -353,24 +361,24 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
                     <div className='questionTimer'>
                         <div 
                         onClick={(e)=>{
-                            e.target={name:"timer",value:"0"}
+                            e.target={name:"time",value:"0"}
                             onInputChange(e)
                         }}
-                        className={`radio-buttonTimerOption ${questions[questionIndex].timer === '0' ? 'active' : ''}`}
+                        className={`radio-buttonTimerOption ${questions[questionIndex].time === '0' ? 'active' : ''}`}
                         >Off</div>
 
                         <div
                         onClick={(e)=>{
-                            e.target={name:"timer",value:"5"}
+                            e.target={name:"time",value:"5"}
                              onInputChange(e);
                              }}
                        
-                        className={`radio-buttonTimerOption ${questions[questionIndex].timer === '5' ? 'active' : ''}`}>
+                        className={`radio-buttonTimerOption ${questions[questionIndex].time === '5' ? 'active' : ''}`}>
                         5 sec</div>
 
                         <div
                         onClick={(e)=>{
-                            e.target={name:"timer",value:"10"}
+                            e.target={name:"time",value:"10"}
                              onInputChange(e)
                         }}
                         className={`radio-buttonTimerOption ${activeOption === '10' ? 'active' : ''}`}>
