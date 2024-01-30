@@ -2,6 +2,8 @@ import "./DeleteBox.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate, Link } from "react-router-dom";
+import React, {useEffect} from "react";
+
 
 export default function LinkShare({link}){
 
@@ -13,6 +15,17 @@ export default function LinkShare({link}){
         draggable: true,
         theme: "dark",
       };
+
+      useEffect(() => {
+        const checkLoginStatus = async () => {
+          if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+            navigate("/login");
+          }
+        };
+    
+        checkLoginStatus();
+      }, [navigate]);
+
 
     const textCopyHandler = ()=>{
 

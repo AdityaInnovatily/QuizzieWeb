@@ -9,10 +9,20 @@ import { orange } from "@mui/material/colors";
 
 export default function Dashboard(){
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+        navigate("/login");
+      }
+    };
+
+    checkLoginStatus();
+  }, [navigate]);
 
   const localStorageUserDetails = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
 
-  const navigate = useNavigate();
   
   // let total_impressions = 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,6 +40,7 @@ export default function Dashboard(){
     // Fetch quiz data from the API
     const fetchQuizList = async () => {
       try {
+        console.log("sadkf;dsljfs",`${getQuizList}/${localStorageUserDetails.userDetails._id}`);
         const response = await fetch(`${getQuizList}/${localStorageUserDetails.userDetails._id}`, {
           method: 'GET',
           headers: {
@@ -76,7 +87,7 @@ export default function Dashboard(){
             }
           };
       
-          fetchQuestionList();
+           fetchQuestionList();
         })
 
       
@@ -85,7 +96,8 @@ export default function Dashboard(){
       }
     };
 
-    fetchQuizList();
+     fetchQuizList();
+    
     
     },[]);
 

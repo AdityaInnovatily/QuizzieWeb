@@ -13,11 +13,20 @@ export default function CreateQuiz(){
   const { state } = location;
   const { editQuizId, editQuizName, editQuizType } = state;
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+        navigate("/login");
+      }
+    };
 
+    checkLoginStatus();
+  }, [navigate]);
   
   console.log("editQuizDetails",editQuizId,editQuizName,editQuizType);
   
-    const navigate = useNavigate();
+ 
     const toastOptions = {
       position: "bottom-right",
       autoClose: 8000,

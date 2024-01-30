@@ -26,6 +26,15 @@ export default function Analytics(){
     const [quizList,setQuizList] = useState([]);
     const [boxOpen, setBoxOpen] = useState(false);
   
+    useEffect(() => {
+      const checkLoginStatus = async () => {
+        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+          navigate("/login");
+        }
+      };
+  
+      checkLoginStatus();
+    }, [navigate]);
 
   useEffect(() => {
     // Fetch quiz data from the API

@@ -9,9 +9,6 @@ import { useNavigate } from "react-router-dom";
 import LinkShare from './LinkShare';
 
 
-
-
-
 export default function CreateQuestion({quizId, quizName, quizType, placeholderInputQuestion, timerDisplay}){
 
     const localStorageUserDetails = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
@@ -19,6 +16,7 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
     console.log("createQuestionPage;;",quizId, quizName);
     
     const navigate = useNavigate();
+    
     const toastOptions = {
         position: "bottom-right",
         autoClose: 8000,
@@ -26,7 +24,17 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
         draggable: true,
         theme: "dark",
       };
-      
+
+      useEffect(() => {
+        const checkLoginStatus = async () => {
+          if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+            navigate("/login");
+          }
+        };
+    
+        checkLoginStatus();
+      }, [navigate]);
+
       useEffect(()=>{
 
             const fetchQuestionList = async () => {

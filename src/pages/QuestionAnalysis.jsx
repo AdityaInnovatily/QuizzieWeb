@@ -1,18 +1,30 @@
 
 import "./QuestionAnalysis.css";
 import Navbar from "../componenents/Navbar";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { getQuestions } from "../APIRoutes";
 import React, { useState, useEffect } from "react";
 
 export default function QuestionAnalysis(){
 
+  const navigate = useNavigate();
     const location = useLocation();
     const { state } = location;
 
     const {quizId,quizName, quizType,quizImpressions,quizCreatedAt} = state;
 
     const [questionList,setQuestionList] = useState([]);
+
+
+    useEffect(() => {
+      const checkLoginStatus = async () => {
+        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+          navigate("/login");
+        }
+      };
+  
+      checkLoginStatus();
+    }, [navigate]);
 
     let boxes =[
       {text:"people Attempted the question"},

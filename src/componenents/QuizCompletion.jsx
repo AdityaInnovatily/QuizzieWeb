@@ -1,6 +1,7 @@
 
 import "./QuizCompletion.css";
-import { useLocation } from "react-router-dom";
+import { useLocation , useNavigate} from "react-router-dom";
+import React, { useEffect } from "react";
 
 
 export default function QuizCompletion(){
@@ -10,6 +11,17 @@ export default function QuizCompletion(){
     const { quizType, score, totalQuestion } = state 
 
     console.log(quizType,score,totalQuestion);
+
+    const navigate = useNavigate();
+    useEffect(() => {
+      const checkLoginStatus = async () => {
+        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+          navigate("/login");
+        }
+      };
+  
+      checkLoginStatus();
+    }, [navigate]);
 
  let trophyImage = "https://img.freepik.com/free-vector/trophy-award-laurel-wreath-composition-with-realistic-image-golden-cup-decorated-with-garland-with-reflection_1284-32301.jpg";
     return <>
