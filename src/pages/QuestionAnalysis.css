@@ -5,6 +5,7 @@
     /* background-color: blueviolet; */
     display: flex;
     overflow: hidden;
+    /* padding:10px; */
 }
 
 .questionAnalysisContent{
@@ -26,10 +27,10 @@
 .questionAnalysisQuestionsList{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    border: solid purple;
+    justify-content: space-around;
+    /* border: solid purple; */
     width:auto;
-    height:80vh;
+    height:78%;
     padding:5px;
     overflow-y: auto;
 }

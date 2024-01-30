@@ -29,7 +29,7 @@ export default function Register(){
 
   useEffect(() => {
     if (localStorageUserDetails) {
-      navigate("/dashboard");
+      navigate("/");
     }
   }, []);
 
@@ -53,13 +53,13 @@ export default function Register(){
       );
       return false;
     } 
-    // else if (password.length < 8) {
-    //   toast.error(
-    //     "Password should be equal or greater than 8 characters.",
-    //     toastOptions
-    //   );
-    //   return false;
-    // } 
+    else if (password.length < 8) {
+      toast.error(
+        "Password should be equal or greater than 8 characters.",
+        toastOptions
+      );
+      return false;
+    } 
     else if (email === "") {
       toast.error("Email is required.", toastOptions);
       return false;
@@ -104,7 +104,7 @@ export default function Register(){
 
             navigate("/login");
 
-          },2000);
+          },1500);
          
         }
           

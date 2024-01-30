@@ -43,7 +43,7 @@ export default function LinkShare({link}){
             <div className="deleteBoxContent">
                 <p>Congrats your Quiz is Published!</p>
 
-                <h3 style={{ 
+                <p style={{ 
                     width: "80%",
                     height: "50px",
                     borderRadius: "10px",
@@ -52,9 +52,11 @@ export default function LinkShare({link}){
                     backgroundColor:"#fffefa",
                     display: "flex",
                     alignItems: "center", 
-                    justifyContent: "center"
-
-                }}>{link}</h3>
+                    justifyContent: "center",
+                    fontWeight: "bold",
+                    fontSize:"13px",
+                    color:"#3458eb"
+                }}>{link}</p>
 
 
                 <div className="createQuestionContentSubmitCancel">

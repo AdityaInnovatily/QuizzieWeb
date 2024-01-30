@@ -82,7 +82,7 @@ export default function Login() {
 
           navigate("/");
 
-        },2000);
+        },1500);
       }
       
     }

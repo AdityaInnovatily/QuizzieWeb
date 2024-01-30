@@ -1,6 +1,43 @@
 import "./DeleteBox.css";
+import { getQuizList, deleteQuiz, getQuestions } from "../APIRoutes";
 
-export default function DeleteBox(){
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
+
+
+export default function DeleteBox({quizId}){
+
+    const navigate = useNavigate();
+    const toastOptions = {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      };
+
+    
+
+    const deleteQuizMethod = async(quizId)=>{
+        console.log("quizId to delete",quizId);
+
+        const response  = await fetch(deleteQuiz, {
+            method: 'POST',
+            headers: {
+              // Authorization: `Bearer ${localStorageUserDetails.token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+             quizId:quizId
+            }),
+          });
+
+
+        //   setQuizList((prevQuizzes) => prevQuizzes.filter((quiz) => quiz._id !== quizId));
+          
+        navigate("/analytics");
+    }
 
     return <>
     
@@ -12,7 +49,7 @@ export default function DeleteBox(){
 
                 <div className="createQuestionContentSubmitCancel">
 
-                    <button id="createQuestionContentSubmitBtn">Confirm Delete</button> 
+                    <button id="createQuestionContentSubmitBtn" onClick={()=>deleteQuizMethod(quizId)}>Confirm Delete</button> 
                     <button id="createQuestionContentCancelBtn">Cancel</button>
           
                 </div>

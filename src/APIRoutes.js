@@ -7,5 +7,6 @@ export const getQuizList = `${host}/quiz/getQuizList`;
 export const deleteQuiz = `${host}/quiz/deleteQuiz`;
 export const getQuestions = `${host}/quiz/getQuestions`;
 export const updateQuiz = `${host}/quiz/updateQuiz`;
+export const getQuestionsWithImpressions = `${host}/quiz/getQuestionsWithImpressions`;
 
 

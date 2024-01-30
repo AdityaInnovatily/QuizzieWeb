@@ -6,6 +6,8 @@ import { getQuizList, deleteQuiz, getQuestions } from "../APIRoutes";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import DeleteBox from "../componenents/DeleteBox";
+
 
 export default function Analytics(){
 
@@ -22,6 +24,8 @@ export default function Analytics(){
 
 
     const [quizList,setQuizList] = useState([]);
+    const [boxOpen, setBoxOpen] = useState(false);
+  
 
   useEffect(() => {
     // Fetch quiz data from the API
@@ -163,18 +167,26 @@ export default function Analytics(){
             <Edit/>
             </button>
 
-            <button className="analyticsTableRowDelete" onClick={()=>deleteQuizMethod(quiz._id)}>
+            <button className="analyticsTableRowDelete" onClick={()=>
+            {  
+              //  setBoxOpen(true)
+            deleteQuizMethod(quiz._id)
+            }
+            }>
             <Delete/>
             </button>
 
+            {/* {boxOpen && <DeleteBox quizId = {quiz._id}/>} */}
+            
             <button className="analyticsTableRowShare" onClick={()=>quizLinkCopyHandler(quiz._id)}>
             <Share/>
             </button>
 
+            
             </div>
-        
+           
           
-            <td id = {quiz._id} onClick = {()=>getQuestionWiseAnalysis(quiz)}>Question Wise Analysis</td>
+            <td id = {quiz._id} style = {{color:"#3458eb"}} onClick = {()=>getQuestionWiseAnalysis(quiz)}>Question Wise Analysis</td>
           </tr>
         ))}
       </tbody>

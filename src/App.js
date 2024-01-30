@@ -33,7 +33,7 @@ export default function App() {
         {/* <Route path = "/radio" element = {<RadioButton/>}/>
         <Route path = "/deleteBox" element = {<DeleteBox/>}/> */}
        {/* no use of this link <Route path = "/linkShare" element = {<LinkShare link = "this is link"/>}/> */}
-        {/* <Route path = "/quiz" element = {<Quiz/>}/> */}
+       <Route path="/quiz/:quizIdTest" element={<Quiz/>} />
         {/* <Route path = "/quizCompletion" element = {<QuizCompletion/>}/> */}
 
 

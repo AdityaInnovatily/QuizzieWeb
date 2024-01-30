@@ -116,13 +116,13 @@ export default function QuestionAnalysis(){
 
             <div className="questionAnalysisHeader">
             <div className="questionAnalysisHeaderLeft">
-                    <p>{quizName} Question Analysis</p>
+                    <p  style ={{color:"#3458eb"}}>{quizName} Question Analysis</p>
                 </div>
 
                 <div className="questionAnalysisImpressions">
 
-                    <p>{`Created on: ${quizCreatedAt}`}</p>
-                    <p>{`Impressions: ${quizImpressions}`}</p>
+                    <p style ={{color:"#f55c0a"}}>{`Created on: ${quizCreatedAt}`}</p>
+                    <p style ={{color:"#f55c0a"}}>{`Impressions: ${quizImpressions}`}</p>
                    
                 </div>
             </div>

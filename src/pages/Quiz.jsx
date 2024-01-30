@@ -1,11 +1,12 @@
 import "./Quiz.css";
 import React, { useState, useEffect,useCallback } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import QuizCompletion from "../componenents/QuizCompletion";
-import { host,updateQuestionResponse } from "../APIRoutes";
+import { host,updateQuestionResponse, getQuestionsWithImpressions } from "../APIRoutes";
 
 
 const Quiz = () => {
+  
   const navigate = useNavigate();
   const [quizData, setQuizData] = useState([]); // Use quizData instead of data
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -13,14 +14,16 @@ const Quiz = () => {
   const [userAnswer, setUserAnswer] = useState({id:"",text:"",image:""});
   const [userScore, setUserScore] = useState(0);
 
- 
+  const { quizIdTest } = useParams();
+
+ console.log("sdfdsfdsfdsfdsf test................",quizIdTest);
 
 
   useEffect(() => {
     // Fetch quiz data from the API
     const fetchQuizData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/quiz/getquestions/65b607bf61f13536878e1715", {
+        const response = await fetch(`${getQuestionsWithImpressions}/${quizIdTest}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -61,9 +64,9 @@ const Quiz = () => {
   const handleNext = async() => {
     let count= 0;
     // console.log("userDelt",userAnswer,quizData[currentQuestionIndex].answer);
-    console.log("entered1",userAnswer.id);
-    console.log("entered2",quizData[currentQuestionIndex]._id);
-    console.log("entered3",currentQuestionIndex);
+    // console.log("entered1",userAnswer.id);
+    // console.log("entered2",quizData[currentQuestionIndex]._id);
+    // console.log("entered3",currentQuestionIndex);
 
 
     const response  = await fetch(updateQuestionResponse, {
@@ -86,7 +89,7 @@ const Quiz = () => {
       userAnswer.text == quizData[currentQuestionIndex].answer.text &&
       userAnswer.image == quizData[currentQuestionIndex].answer.image 
       ){
-        console.log("entery gate1 if",userScore);
+        console.log("entry gate1 if",userScore);
         // console.log("userDelt",userAnswer,quizData[currentQuestionIndex].answer);
          setUserScore((prevScore)=>prevScore+1);
       

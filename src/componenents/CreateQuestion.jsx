@@ -64,6 +64,7 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
 
   const [questionIndex,setQuestionIndex]=useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [quizIdAfterCreation, getQuizIdAfterCreation] = useState("");
  
   const initialState={
       question:"",
@@ -184,6 +185,8 @@ const addnewOption = () => {
   
  const onQuestionCreationCancel = ()=>{
 
+  navigate("/");
+
  }
 
 
@@ -242,7 +245,8 @@ const addnewOption = () => {
       });
 
       let data = await responseCreateQuiz.json();
-
+      console.log("ddataaaaaaa created;;", data);
+      getQuizIdAfterCreation(data._id);
         if(data.msg){
             alert(data.msg);
         }else{
@@ -381,7 +385,7 @@ const addnewOption = () => {
                             e.target={name:"time",value:"10"}
                              onInputChange(e)
                         }}
-                        className={`radio-buttonTimerOption ${activeOption === '10' ? 'active' : ''}`}>
+                        className={`radio-buttonTimerOption ${questions[questionIndex].time === '10' ? 'active' : ''}`}>
                         10 sec</div>
 
                     </div>
@@ -396,7 +400,7 @@ const addnewOption = () => {
         </div>
 
         
-        {isModalOpen && <LinkShare link = "http://localhost:5000/quiz/getquestions/65b5e4f721ae83bb7629edd8"/>}
+        {isModalOpen && <LinkShare link = {`${getQuestions}/${quizIdAfterCreation}`}/>}
         
         </div>
         <ToastContainer />
