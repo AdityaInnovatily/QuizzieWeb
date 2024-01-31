@@ -12,7 +12,7 @@
 .quizPage{
     width:100vw;
     height:100vh;
-    border:solid red;
+    /* border:solid red; */
     background-color: grey;
     
 }
@@ -20,7 +20,7 @@
 .quizContent{
     width:50%;
     height:auto;
-    border: solid green;
+    /* border: solid green; */
     border-radius: 12px;
     background-color: white;
     flex-direction: column;
@@ -36,7 +36,7 @@
     /* margin:5px 80px; */
     padding: 5px 10px;
     justify-content: space-between;
-    border: solid red;
+    /* border: solid red; */
 }
 
 
@@ -59,7 +59,7 @@
 
 
 .quizOptions{
-    border: solid green;
+    /* border: solid green; */
     width: auto;
     display: grid;
     grid-template-areas: 
@@ -76,7 +76,7 @@
     background-color: beige;
     border-radius: 12px;
     column-gap: 10px;
-    border: solid orange;
+    /* border: solid orange; */
 }
 
 .quizOption.active{
@@ -108,7 +108,7 @@
         width: 100%;
     }
     .quizOptions{
-        border: solid green;
+        /* border: solid green; */
         width: auto;
         display: grid;
         grid-template-areas: 

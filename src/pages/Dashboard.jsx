@@ -127,11 +127,11 @@ export default function Dashboard(){
            <div className="dashboard_TotalValues">
             
             <div className="dashboard_TotalValues_Quiz"><p>{Math.floor(quizList.length)} Quiz Created</p></div>
-            <div className="dashboard_TotalValues_Questions"><p>{Math.floor(totalQuestionsCount/2)} Questions</p></div>
+            <div className="dashboard_TotalValues_Questions"><p>{Math.ceil(totalQuestionsCount/2)} Questions</p></div>
             <div className="dashboard_TotalValues_Impressions" 
             onClick={ 
               openModal}
-            ><p>{ (totalImpressions/2)>= 1000 ? `${Math.round(totalImpressions / 200) / 10}k`:totalImpressions/2} Impressions</p></div>
+            ><p>{ (totalImpressions/2)>= 1000 ? `${Math.round(totalImpressions / 200) / 10}k`:Math.ceil(totalImpressions/2)} Impressions</p></div>
 
 {isModalOpen && <DeleteBox/>}
            

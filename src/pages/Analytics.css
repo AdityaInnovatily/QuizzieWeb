@@ -36,6 +36,14 @@
     /* border:solid red; */
    
 }
+th {
+    background-color: #045ff1;
+    
+  }
+
+tr:nth-child(even) {
+    background-color: #86aff2;
+  }
 
 .analyticsTableRowEdit,
 .analyticsTableRowDelete,

@@ -408,7 +408,7 @@ const addnewOption = () => {
         </div>
 
         
-        {isModalOpen && <LinkShare link = {`${getQuestions}/${quizIdAfterCreation}`}/>}
+        {isModalOpen && <LinkShare link = {`http://localhost:3000/quiz/${quizIdAfterCreation}`}/>}
         
         </div>
         <ToastContainer />

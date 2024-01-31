@@ -1,4 +1,4 @@
-import "./Quiz.css";
+import "../pages/Quiz.css";
 import React, { useState, useEffect,useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import QuizCompletion from "../componenents/QuizCompletion";
@@ -10,20 +10,20 @@ const Quiz = () => {
   const navigate = useNavigate();
   const [quizData, setQuizData] = useState([]); // Use quizData instead of data
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timer, setTimer] = useState(10);
+  const [countDown, setCountDown] = useState(Infinity);
   const [userAnswer, setUserAnswer] = useState({id:"",text:"",image:""});
   const [userScore, setUserScore] = useState(0);
 
-  const { quizIdTest } = useParams();
+  const { quizId } = useParams();
 
- console.log("sdfdsfdsfdsfdsf test................",quizIdTest);
+//  console.log("sdfdsfdsfdsfdsf test................",quizId);
 
 
   useEffect(() => {
     // Fetch quiz data from the API
     const fetchQuizData = async () => {
       try {
-        const response = await fetch(`${getQuestionsWithImpressions}/${quizIdTest}`, {
+        const response = await fetch(`${getQuestionsWithImpressions}/${quizId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -36,39 +36,59 @@ const Quiz = () => {
         }
 
         const data = await response.json();
+
         setQuizData(data);
-        setTimer(data[currentQuestionIndex]?.time);
+
+        if(Number(data[currentQuestionIndex]?.time)){
+          
+          setCountDown(Number(data[currentQuestionIndex]?.time));
+        }
+      
+
       } catch (error) {
         console.error('Error fetching quiz data:', error.message);
       }
     };
 
     fetchQuizData();
-  }, [currentQuestionIndex]);
+  }, []);
+
 
   useEffect(() => {
-    const countdown = setInterval(() => {
-      setTimer((prevTimer) => {
-        if (prevTimer === 0) {
-           handleNext();
-          return quizData[currentQuestionIndex + 1]?.time;
-        }
-        return prevTimer - 1;
-      });
+    // Exit the effect if the countdown reaches zero
+    if (countDown === 0) {
+       handleNext();
+    }
+
+    // Update the countdown every second
+    const timer = setInterval(() => {
+      setCountDown((prevCountDown) => prevCountDown - 1);
     }, 1000);
 
-    return () => clearInterval(countdown);
-  }, [currentQuestionIndex, quizData]);
+    // Clear the interval when the component is unmounted or when countdown reaches zero
+    return () => clearInterval(timer);
+  }, [countDown]); // Run the effect whenever the countDown state changes
 
- 
+
   const handleNext = async() => {
     let count= 0;
-    // console.log("userDelt",userAnswer,quizData[currentQuestionIndex].answer);
-    // console.log("entered1",userAnswer.id);
-    // console.log("entered2",quizData[currentQuestionIndex]._id);
-    // console.log("entered3",currentQuestionIndex);
+  
+    if(userAnswer.id){
 
-
+      console.log("userScoe;",userScore);
+    if(
+      userAnswer.text == quizData[currentQuestionIndex].answer.text &&
+      userAnswer.image == quizData[currentQuestionIndex].answer.image 
+      ){
+     
+        if(currentQuestionIndex == quizData.length-1){
+          ++count;
+        }
+      
+      setUserScore((prevScore)=>prevScore+1);
+      
+      }
+    
     const response  = await fetch(updateQuestionResponse, {
       method: 'POST',
       headers: {
@@ -81,55 +101,30 @@ const Quiz = () => {
       }),
     });
 
-      // let data = await response.json();
-
-      // console.log("questionResponse",data);
-
-    if(
-      userAnswer.text == quizData[currentQuestionIndex].answer.text &&
-      userAnswer.image == quizData[currentQuestionIndex].answer.image 
-      ){
-        console.log("entry gate1 if",userScore);
-        // console.log("userDelt",userAnswer,quizData[currentQuestionIndex].answer);
-         setUserScore((prevScore)=>prevScore+1);
-      
-        //  ++score;
-        ++count;
-        //  console.log("userScore11111",userScore,count);
-      }
+    }
 
     // For submit 
     if (currentQuestionIndex == quizData.length - 1) {
         
-          // console.log("userScore22222222",userScore);
+          console.log("userScore22222222",quizData[0].quizType,userScore +count,quizData.length);
           navigate('/quizCompletion', {
                 state: { quizType: quizData[0].quizType, score: userScore+count, totalQuestion: quizData.length },
               });
   
-    } else {
-      console.log("entery gate2 else");
-      // For Next
-      clearInterval(timer); // Clear the timer when moving to the next question
-
-      // Check if it's the last question
-      if (currentQuestionIndex < quizData.length - 1) {
-         setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-      } else {
-        // Handle quiz completion, e.g., show results
-        console.log('Quiz completed!');
-      }
-
-       setTimer(quizData[currentQuestionIndex + 1]?.time || 0);
-    }
+    } 
+   
 
     setUserAnswer({id:"",text:"",image:""});
+    setCurrentQuestionIndex((prev)=>prev + 1);
+   if(Number(quizData[currentQuestionIndex]?.time)){
+ 
+          setCountDown(Number(quizData[currentQuestionIndex]?.time));
+        }
 
 
   };
 
-  const currentQuestion = quizData[currentQuestionIndex];
-
-
+ 
   const userSelectedOption = (option) => {
     // Assuming 'option' is an object with 'text' and 'image' properties
    console.log("option selected",option);
@@ -141,8 +136,6 @@ const Quiz = () => {
     
   };
 
-
-
     return <>
     
     {/* <div className="quizOverlay"></div> */}
@@ -151,14 +144,18 @@ const Quiz = () => {
             <div className="quizContent">
       <div className="quizHeader">
       <div className="questionCount">0{currentQuestionIndex + 1}/0{quizData.length}</div>
-      <div className="questionTimer">00:{timer >= 10 ? timer:  "0" +timer}s</div>
+      <div className="questionTimer" style={{ display: countDown === Infinity ? 'none' : 'block' }}>
+  00:{countDown >= 10 ? countDown : '0' + countDown}s
+</div>
+
       </div>
-      <div className="quizQuestion">{currentQuestion?.question}</div>
+      <div className="quizQuestion">{quizData[currentQuestionIndex]?.question}</div>
       <div className="quizOptions">
-        {currentQuestion?.options.map((option) => (
+        {quizData[currentQuestionIndex]?.options.map((option) => (
 
           <div key={option?._id} 
           name = {option?._id}
+          value = {userAnswer}
           onClick={() => userSelectedOption(option)}
           className={`quizOption ${userAnswer?.id == option?._id ? "active": ""}`}
           >

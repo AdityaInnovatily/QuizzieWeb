@@ -30,7 +30,7 @@ export default function QuestionAnalysis(){
       {text:"people Attempted the question"},
   {text:"people Answered Correctly"},
   {text:"people Answered Incorrectly"}
-  ] 
+  ]
 
     // console.log("qunnasf",state);
     // if(quizType == "q&a"){
@@ -178,10 +178,10 @@ export default function QuestionAnalysis(){
         ))}
 
 
-        {quizType == "poll" && boxes.map((box,boxIndex) => (
+        {quizType == "poll" && obj?.options.map((box,boxIndex) => (
           <div className="questionAnalysisQuestionDetailsBox">
           
-            <p>{obj.options[boxIndex].count}</p>
+            <p>{obj?.options[boxIndex]?.count}</p>
             
              <p>{obj.options[boxIndex]?.text ? obj.options[boxIndex]?.text : `option${boxIndex+1}`}</p>
           </div>

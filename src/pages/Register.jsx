@@ -93,10 +93,10 @@ export default function Register(){
             toast.error(data.msg,toastOptions);
         }else{
 
-          localStorage.setItem(
-            process.env.REACT_APP_LOCALHOST_KEY,
-            JSON.stringify(data)
-          );
+          // localStorage.setItem(
+          //   process.env.REACT_APP_LOCALHOST_KEY,
+          //   JSON.stringify(data)
+          // );
 
           toast.error("successfully registered", toastOptions);
 

@@ -13,21 +13,13 @@ export default function QuizCompletion(){
     console.log(quizType,score,totalQuestion);
 
     const navigate = useNavigate();
-    useEffect(() => {
-      const checkLoginStatus = async () => {
-        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-          navigate("/login");
-        }
-      };
-  
-      checkLoginStatus();
-    }, [navigate]);
+
 
  let trophyImage = "https://img.freepik.com/free-vector/trophy-award-laurel-wreath-composition-with-realistic-image-golden-cup-decorated-with-garland-with-reflection_1284-32301.jpg";
     return <>
        <div className="quizCompletionComponent">
   <div className="quizCompletionContent">
-    {quizType == "qna" ? (
+    {quizType == "q&a" ? (
       <>
         <h1>Congrats Quiz is Completed</h1>
         <img id="trophyImage" src={trophyImage} />

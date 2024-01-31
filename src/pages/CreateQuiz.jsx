@@ -9,9 +9,6 @@ import { useLocation } from "react-router-dom";
 
 export default function CreateQuiz(){
 
-  const location = useLocation();
-  const { state } = location;
-  const { editQuizId, editQuizName, editQuizType } = state;
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -23,6 +20,13 @@ export default function CreateQuiz(){
 
     checkLoginStatus();
   }, [navigate]);
+
+  
+  const location = useLocation();
+  const { state } = location;
+  const { editQuizId, editQuizName, editQuizType } = state;
+
+
   
   console.log("editQuizDetails",editQuizId,editQuizName,editQuizType);
   

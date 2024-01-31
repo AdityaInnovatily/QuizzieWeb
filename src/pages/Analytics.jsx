@@ -94,7 +94,7 @@ export default function Analytics(){
     const quizLinkCopyHandler = (quizId)=>{
 
         const tempInput = document.createElement('input');
-        tempInput.value = `${getQuestions}/${quizId}`;
+        tempInput.value = `http://localhost:3000/quiz/${quizId}`;
     
         // Append the input element to the document
         document.body.appendChild(tempInput);
@@ -155,12 +155,12 @@ export default function Analytics(){
         </tr>
       </thead>
       <tbody>
-        {quizList.map((quiz) => (
+        {quizList.map((quiz,index) => (
           <tr key={quiz._id}>
-            <td>{quiz._id}</td>
+            <td>{index + 1}</td>
             <td>{quiz.name}</td>
             <td>{quiz.createdAt}</td>
-            <td>{quiz.impressions}</td>
+            <td>{Math.ceil(quiz.impressions/2)}</td>
             
             <div className="analyticsTableRowIcons">
 
