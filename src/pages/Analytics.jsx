@@ -16,7 +16,7 @@ export default function Analytics(){
     const navigate = useNavigate();
     const toastOptions = {
         position: "bottom-right",
-        autoClose: 8000,
+        autoClose: 1500,
         pauseOnHover: true,
         draggable: true,
         theme: "dark",
@@ -94,7 +94,7 @@ export default function Analytics(){
     const quizLinkCopyHandler = (quizId)=>{
 
         const tempInput = document.createElement('input');
-        tempInput.value = `http://localhost:3000/quiz/${quizId}`;
+        tempInput.value = `https://quizzie-frontend2.vercel.app/quiz/${quizId}`;
     
         // Append the input element to the document
         document.body.appendChild(tempInput);
@@ -160,7 +160,7 @@ export default function Analytics(){
             <td>{index + 1}</td>
             <td>{quiz.name}</td>
             <td>{quiz.createdAt}</td>
-            <td>{Math.ceil(quiz.impressions/2)}</td>
+            <td>{Math.ceil(quiz.impressions)}</td>
             
             <div className="analyticsTableRowIcons">
 

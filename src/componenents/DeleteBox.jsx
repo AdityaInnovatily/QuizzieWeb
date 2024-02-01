@@ -13,7 +13,7 @@ export default function DeleteBox({quizId}){
     const navigate = useNavigate();
     const toastOptions = {
         position: "bottom-right",
-        autoClose: 8000,
+        autoClose: 1500,
         pauseOnHover: true,
         draggable: true,
         theme: "dark",

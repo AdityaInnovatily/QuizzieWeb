@@ -19,7 +19,7 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
     
     const toastOptions = {
         position: "bottom-right",
-        autoClose: 8000,
+        autoClose: 2500,
         pauseOnHover: true,
         draggable: true,
         theme: "dark",
@@ -54,6 +54,7 @@ export default function CreateQuestion({quizId, quizName, quizType, placeholderI
                   const data = await response.json();
                 //   setQuestionList(data);
                 setQuesitons(data);
+
           
                   console.log("questionListzzzzzzzzz",data);
                 
@@ -202,18 +203,45 @@ const addnewOption = () => {
 
         console.log("questissns", questions);
     
-        questions.map((question,index)=>{  
-
-            if(!question.question.trim()){
-            toast.error(`question is empty at question ${index+1} `, toastOptions);
-        }
-        if(!question.optionType.trim()){
-            toast.error(`optionType is empty at question ${index+1} `, toastOptions);
-        }
-        if(question?.answer?.text == process.env.REACT_APP_UNIQUE_KEY_FOR_ANS && quizType == "q&a"){
-            toast.error(`answer is not available for question ${index+1} `, toastOptions);
-        }})
+        let checkFilledInput = () => {
+          let isValid = questions.every((question, index) => {
+              if (quizType === "poll") {
+                  question.answer.text = "";
+                  question.answer.image = "";
+              }
+      
+              if (!question.question.trim()) {
+                  toast.error(`question is empty at question ${index + 1}`, toastOptions);
+                  return false;
+              } else if (!question.optionType.trim()) {
+                  toast.error(`optionType is empty at question ${index + 1}`, toastOptions);
+                  return false;
+              } else if (question?.answer?.text.trim() === process.env.REACT_APP_UNIQUE_KEY_FOR_ANS && quizType === "q&a") {
+                  toast.error(`answer is not available for question ${index + 1}`, toastOptions);
+                  return false;
+              } else if (question?.answer?.text.trim() === "" && question?.answer?.image.trim() === "" && quizType === "q&a") {
+                  toast.error(`answer is not available for question ${index + 1}`, toastOptions);
+                  return false;
+              } else if (!question.options.every((option, optionIndex) => {
+                  if (!option.text.trim() && !option.image.trim()) {
+                      toast.error(`option ${optionIndex + 1} is empty for question ${index + 1}`, toastOptions);
+                      return false;
+                  }
+                  return true;
+              })) {
+                  return false;
+              }
+      
+              return true; // Return true if all conditions are met for this question
+          });
+      
+          return isValid;
+      };
+      
+      // console.log("checkFilledInput", checkFilledInput());
+      
      
+      if(checkFilledInput()){
 
     let req = {
             "quizId": quizId,
@@ -237,7 +265,8 @@ const addnewOption = () => {
 
           let data = await responseUpdateQuiz.json();
 
-       
+          getQuizIdAfterCreation(quizId);
+    
             setIsModalOpen(true);
     
 
@@ -262,6 +291,7 @@ const addnewOption = () => {
         }
     }
 
+  }
 
   }
 
@@ -322,16 +352,18 @@ const addnewOption = () => {
             <div className='createQuestionOptions'>
                     {questions[questionIndex]?.options.map((each,index)=>{
                         {/* console.log("optionsss",each); */}
+                         
                         return (
                             <div className='createQuestionOption'>
-                                <input type="radio" name="answer" 
-                                value={index} 
+                                {quizType == "q&a" && <input type="radio" name="answer" 
+                                value= {index}
                                 onChange={onInputChange} 
                                 checked={
                                    
-                                    JSON.stringify(questions[questionIndex]?.answer) === JSON.stringify(questions[questionIndex].options[index])
+                                    questions[questionIndex]?.answer.text == questions[questionIndex].options[index].text &&
+                                    questions[questionIndex]?.answer.image == questions[questionIndex].options[index].image 
                                     }
-                                    />
+                                    />}
 
                                 {(questions[questionIndex]?.optionType==="text&image" || questions[questionIndex]?.optionType==="text") &&
                                 <input type="text"
@@ -339,7 +371,8 @@ const addnewOption = () => {
                                 value={questions[questionIndex]?.options[index].text}
                                 name= {`text${index}`}
                                 placeholder={(questions[questionIndex]?.optionType==="text" || questions[questionIndex]?.optionType==="text&image")  ? 'Text':"Image Url"} 
-                                className={`radio-buttonOption ${JSON.stringify(questions[questionIndex]?.answer) === JSON.stringify(questions[questionIndex]?.options[index]) ? "active":""}`} />}
+                                className={`radio-buttonOption ${questions[questionIndex]?.answer.text == questions[questionIndex].options[index].text &&
+                                    questions[questionIndex]?.answer.image == questions[questionIndex].options[index].image  ? "active":""}`} />}
 
                                 {(questions[questionIndex]?.optionType==="text&image" || questions[questionIndex]?.optionType==="image") &&
                                 <input type="text" 
@@ -347,7 +380,8 @@ const addnewOption = () => {
                                 value={questions[questionIndex]?.options[index].image}
                                 name= {`image${index}`}
                                 placeholder="Image Url"
-                                className={`radio-buttonOption ${JSON.stringify(questions[questionIndex]?.answer) === JSON.stringify(questions[questionIndex]?.options[index]) ? "active":""}`} />
+                                className={`radio-buttonOption ${questions[questionIndex]?.answer.text == questions[questionIndex].options[index].text &&
+                                    questions[questionIndex]?.answer.image == questions[questionIndex].options[index].image ? "active":""}`} />
                                 }
                               
 
@@ -408,7 +442,7 @@ const addnewOption = () => {
         </div>
 
         
-        {isModalOpen && <LinkShare link = {`http://localhost:3000/quiz/${quizIdAfterCreation}`}/>}
+        {isModalOpen && <LinkShare link = {`https://quizzie-frontend2.vercel.app/quiz/${quizIdAfterCreation}`}/>}
         
         </div>
         <ToastContainer />

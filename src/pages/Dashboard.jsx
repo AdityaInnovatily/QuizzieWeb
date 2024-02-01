@@ -30,9 +30,6 @@ export default function Dashboard(){
   const [totalImpressions, setTotalImpressions] = useState(0);
   const [totalQuestionsCount, setTotalQuestionsCount] = useState(0);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
 
 
 
@@ -56,13 +53,20 @@ export default function Dashboard(){
         const quizListData = await response.json();
         setQuizList(quizListData);
 
+        const totalImpressions = quizListData.reduce((accumulator, currentValue) => {
+          return accumulator + currentValue.impressions;
+        }, 0);
+
+        setTotalImpressions(totalImpressions);
         console.log("dashboard quizList;",quizListData);
+        console.log("dashboard quizList imporessions;",totalImpressions);
 
         /////fetching question list
 
         quizListData.map((obj)=>{
           // console.log("obj.impress",obj.impressions);
-          setTotalImpressions((prevValue)=> prevValue + obj.impressions);
+          // setTotalImpressions((prevValue)=> prevValue + obj.impressions);
+
           const fetchQuestionList = async () => {
             try {
               const responseQuestionList = await fetch(`${getQuestions}/${obj._id}`, {
@@ -127,13 +131,14 @@ export default function Dashboard(){
            <div className="dashboard_TotalValues">
             
             <div className="dashboard_TotalValues_Quiz"><p>{Math.floor(quizList.length)} Quiz Created</p></div>
-            <div className="dashboard_TotalValues_Questions"><p>{Math.ceil(totalQuestionsCount/2)} Questions</p></div>
+            <div className="dashboard_TotalValues_Questions"><p>{Math.ceil(totalQuestionsCount)} Questions</p></div>
             <div className="dashboard_TotalValues_Impressions" 
-            onClick={ 
-              openModal}
-            ><p>{ (totalImpressions/2)>= 1000 ? `${Math.round(totalImpressions / 200) / 10}k`:Math.ceil(totalImpressions/2)} Impressions</p></div>
+          
+            >
+            <p>{ (totalImpressions)>= 1000 ? `${Math.round(totalImpressions / 100) / 10}k`:totalImpressions} Impressions</p>
+            </div>
 
-{isModalOpen && <DeleteBox/>}
+
            
            </div>
 
@@ -150,7 +155,7 @@ export default function Dashboard(){
         <div key={index} className="dashboard_quizData">
         <div className="dashboard_quizData_top">
           <p id="dashboard_quizData_quizName">{item.name}</p>
-         <div className="dashboard_quizData_impressionsWithIcon"> <p id="dashboard_quizData_impressions">{item.impressions} </p>
+         <div className="dashboard_quizData_impressionsWithIcon"> <p id="dashboard_quizData_impressions">{Math.ceil(item.impressions)} </p>
          <VisibilityOutlinedIcon style={{color:"#ff4500"}}/>
           </div>
           </div>

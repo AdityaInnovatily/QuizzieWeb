@@ -12,7 +12,7 @@ export default function Login() {
   const [values, setValues] = useState({ email: "", password: "" });
   const toastOptions = {
     position: "bottom-right",
-    autoClose: 8000,
+    autoClose: 1500,
     pauseOnHover: true,
     draggable: true,
     theme: "dark",

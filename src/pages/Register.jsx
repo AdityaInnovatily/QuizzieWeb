@@ -15,7 +15,7 @@ export default function Register(){
   const navigate = useNavigate();
   const toastOptions = {
     position: "bottom-right",
-    autoClose: 8000,
+    autoClose: 1500,
     pauseOnHover: true,
     draggable: true,
     theme: "dark",
@@ -104,7 +104,7 @@ export default function Register(){
 
             navigate("/login");
 
-          },1500);
+          },1000);
          
         }
           
